@@ -1,0 +1,9 @@
+services:
+  database:
+    image: mysql:latest
+    container_name: post-auth-database
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MSQL_DATABASE=post_auth
+    ports:
+      - 3306:3306
