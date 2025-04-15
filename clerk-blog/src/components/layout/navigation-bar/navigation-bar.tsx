@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import { useNavigationBar } from "@hooks/navigation-bar.hook";
 import { MenuButton } from "./menu-button";
+import Link from "next/link";
 
 export function NavigationBar() {
   const { navigationBarRef, showNavigationBar, setShowNavigationBar } =
@@ -27,26 +28,31 @@ export function NavigationBar() {
           clsx(showNavigationBar ? "left-0" : "-left-100"),
         )}
       >
-        <NavButton href="/">Clerk Blog</NavButton>
-        <div className="flex items-center gap-4">
-          <SignedOut>
+        <Link
+          href="/"
+          className="font-bold transition-all duration-100 hover:text-blue-600 sm:hover:text-white"
+        >
+          Clerk Blog
+        </Link>
+        <SignedOut>
+          <div className="flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
             <NavButton href="/sign-in">Sign In</NavButton>
             <NavButton href="/sign-up">Sign Up</NavButton>
-          </SignedOut>
-          <SignedIn>
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <div className="flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
             <NavButton href="/dashboard">Sistema</NavButton>
-            <div className="absolute top-6 left-46 sm:static">
-              <UserButton
-                appearance={{
-                  baseTheme: dark,
-                  variables: {
-                    colorBackground: "#0a0a0a",
-                  },
-                }}
-              />
-            </div>
-          </SignedIn>
-        </div>
+            <UserButton
+              appearance={{
+                baseTheme: dark,
+                variables: {
+                  colorBackground: "#0a0a0a",
+                },
+              }}
+            />
+          </div>
+        </SignedIn>
       </nav>
     </header>
   );

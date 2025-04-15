@@ -19,7 +19,7 @@ export function DeleteDialog({ post }: { post: IUserPost }) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Você tem certeza de que deseja deletar a publicação
+            Você tem certeza de que deseja deletar a publicação?
           </DialogTitle>
         </DialogHeader>
         <Form action={deletePost.bind(null, post.userId, post.id)}>
