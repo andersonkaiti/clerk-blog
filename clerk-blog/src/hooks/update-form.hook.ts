@@ -1,6 +1,7 @@
-import { getPostByIDToUpdate, IUserPost, updatePost } from "@actions/post";
+import { getPostByIDToUpdate, updatePost } from "@actions/post";
 import { useParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
+import { IUserPost } from "types/user-post";
 
 export function useUpdateForm() {
   const { id } = useParams<{ id: string }>();

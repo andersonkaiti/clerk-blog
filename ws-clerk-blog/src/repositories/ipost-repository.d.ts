@@ -1,4 +1,5 @@
 import { type IPost } from "../models/post.ts";
+import { IUser } from "../models/user";
 
 export interface IPostRepository {
   get(): Promise<IPost[]>;

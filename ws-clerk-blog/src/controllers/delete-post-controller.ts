@@ -5,12 +5,18 @@ export class DeletePostController {
   constructor(private postRepository: IPostRepository) {}
 
   async handle(req: Request, res: Response) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    await this.postRepository.delete(id);
+      await this.postRepository.delete(id);
 
-    res.status(200).json({
-      message: "Post deletado.",
-    });
+      res.status(200).json({
+        message: "Post deletado.",
+      });
+    } catch (err) {
+      res.status(400).json({
+        err,
+      });
+    }
   }
 }

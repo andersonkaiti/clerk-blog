@@ -1,4 +1,4 @@
-import { deletePost, IUserPost } from "@actions/post";
+import { deletePost } from "@actions/post";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,7 @@ import {
 } from "@components/ui/dialog";
 import { Trash } from "lucide-react";
 import Form from "next/form";
+import { IUserPost } from "types/user-post";
 
 export function DeleteDialog({ post }: { post: IUserPost }) {
   return (

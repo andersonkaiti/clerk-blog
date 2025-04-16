@@ -5,8 +5,14 @@ export class CreatePostController {
   constructor(private postRepository: IPostRepository) {}
 
   async handle(req: Request, res: Response) {
-    const post = this.postRepository.create(req.body);
+    try {
+      const post = this.postRepository.create(req.body);
 
-    res.status(201).json(post);
+      res.status(201).json(post);
+    } catch (err) {
+      res.status(400).json({
+        err,
+      });
+    }
   }
 }

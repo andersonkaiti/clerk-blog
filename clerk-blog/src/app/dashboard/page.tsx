@@ -1,10 +1,11 @@
-import { getUserPosts, IUserPost } from "@actions/post";
+import { getUserPosts } from "@actions/post";
 import { DeleteDialog } from "@components/delete-dialog";
 import { Table } from "@components/table";
 import { parseTime } from "@utils/parse-time";
 import { CirclePlus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { IUserPost } from "types/user-post";
 
 export default async function Dashboard() {
   const posts: IUserPost[] = await getUserPosts();
@@ -17,9 +18,7 @@ export default async function Dashboard() {
             <Table.Title>Título</Table.Title>
             <Table.Title>Publicado</Table.Title>
             <Table.Title>Atualizado</Table.Title>
-            <Table.Title className="flex items-center gap-10">
-              Ações
-            </Table.Title>
+            <Table.Title>Ações</Table.Title>
             <Table.Title>
               <Link
                 href="/dashboard/create-post"

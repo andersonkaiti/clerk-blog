@@ -5,10 +5,16 @@ export class GetUserPostsController {
   constructor(private postRepository: IPostRepository) {}
 
   async handle(req: Request, res: Response) {
-    const { userId } = req.params;
+    try {
+      const { userId } = req.params;
 
-    const posts = await this.postRepository.getByUserId(userId);
+      const posts = await this.postRepository.getByUserId(userId);
 
-    res.status(200).json(posts);
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(400).json({
+        err,
+      });
+    }
   }
 }

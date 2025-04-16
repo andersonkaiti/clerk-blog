@@ -18,6 +18,13 @@ export class PostRepository implements IPostRepository {
       where: {
         deleted: false,
       },
+      include: {
+        user: {
+          include: {
+            email_addresses: true,
+          },
+        },
+      },
     });
   }
 

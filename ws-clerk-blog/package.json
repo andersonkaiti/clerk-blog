@@ -4,7 +4,7 @@
   "description": "",
   "main": "./bin/server.ts",
   "scripts": {
-    "dev": "tsx .",
+    "dev": "tsx --watch .",
     "build": "tsup",
     "start": "node ./dist/server.js",
     "postinstall": "prisma generate"
@@ -14,16 +14,20 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@prisma/client": "^6.5.0",
+    "@clerk/backend": "^1.28.0",
+    "@clerk/express": "^1.4.5",
+    "@prisma/client": "^6.6.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "svix": "^1.64.0",
     "tsup": "^8.4.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
-    "prisma": "^6.6.0",
+    "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }

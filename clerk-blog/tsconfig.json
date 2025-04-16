@@ -26,6 +26,7 @@
       "@adapters/*": ["./src/adapters/*"],
       "@config/*": ["./src/config/*"],
       "@utils/*": ["./src/utils/*"],
+      "types/*": ["./src/@types/*"],
       "@/*": ["./src/*"]
     }
   },

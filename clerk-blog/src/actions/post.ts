@@ -1,10 +1,11 @@
 "use server";
 
 import { api } from "@adapters/index";
-import { auth, clerkClient, User } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { BASE_URL } from "@config/index";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { IPost } from "types/user-post";
 import z from "zod";
 
 const postSchema = z.object({
@@ -16,7 +17,7 @@ const postSchema = z.object({
   }),
 });
 
-export interface IPost {
+export interface IValidatedPost {
   title: string;
   text: string;
   userId: string;
@@ -24,7 +25,7 @@ export interface IPost {
 }
 
 export interface IErrors {
-  errors: { [K in keyof IPost]?: string[] };
+  errors: { [K in keyof IValidatedPost]?: string[] };
 }
 
 function validateForm(formData: z.infer<typeof postSchema>) {
@@ -43,8 +44,6 @@ export async function validateUser(postUserId: string) {
   if (postUserId !== userId) {
     redirect("/dashboard");
   }
-
-  return;
 }
 
 export async function createPost(_: unknown, formData: FormData) {
@@ -58,7 +57,7 @@ export async function createPost(_: unknown, formData: FormData) {
     return errors;
   }
 
-  await api.post<IPost>({
+  await api.post<IValidatedPost>({
     url: `${BASE_URL}/post`,
     body: { ...data, userId },
   });
@@ -82,7 +81,7 @@ export async function updatePost(id: string, _: unknown, formData: FormData) {
 
   const data = Object.fromEntries(formData) as z.infer<typeof postSchema>;
 
-  const errors = validateForm(data as IPost);
+  const errors = validateForm(data as IValidatedPost);
 
   if (errors) {
     return errors;
@@ -103,49 +102,27 @@ export async function getUserPosts() {
     throw new Error("Usuário não autenticado.");
   }
 
-  return await api.get<IUserPost>({
+  return await api.get<IPost>({
     url: `${BASE_URL}/post/by-user-id/${session.userId}`,
   });
 }
 
-export interface IUserPost {
-  title: string;
-  text: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  id: string;
-  user: User[];
-}
-
 export async function getAllPosts() {
-  const posts: IUserPost[] = await api.get<IUserPost>({
+  return await api.get<IPost>({
     url: `${BASE_URL}/post`,
   });
-
-  const usersIds = [...new Set(posts?.map((post) => post.userId))];
-
-  const client = await clerkClient();
-
-  const users: User[] = (await client.users.getUserList({ userId: usersIds }))
-    .data;
-
-  return posts.map((post) => ({
-    ...post,
-    user: users.filter((user) => user.id === post.userId),
-  }));
 }
 
 export async function getPostByID(id: string) {
-  const [post] = await api.get<IUserPost>({
-    url: `${BASE_URL}/post/by-post-id/${id}`,
-  });
-
-  return post;
+  return (
+    await api.get<IPost>({
+      url: `${BASE_URL}/post/by-post-id/${id}`,
+    })
+  )[0];
 }
 
 export async function getPostByIDToUpdate(id: string) {
-  const [post] = await api.get<IUserPost>({
+  const [post] = await api.get<IPost>({
     url: `${BASE_URL}/post/by-post-id/${id}`,
   });
 
