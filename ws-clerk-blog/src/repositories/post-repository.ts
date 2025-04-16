@@ -75,4 +75,12 @@ export class PostRepository implements IPostRepository {
       },
     });
   }
+
+  async deleteUserPosts(userId: string): Promise<void> {
+    await this.database.posts.deleteMany({
+      where: {
+        userId,
+      },
+    });
+  }
 }

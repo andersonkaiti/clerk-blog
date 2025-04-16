@@ -7,4 +7,5 @@ export interface IPostRepository {
   create(data: IPost): Promise<IPost>;
   update(data: IPost): Promise<IPost>;
   delete(id: string): Promise<void>;
+  deleteUserPosts(event: unknown): Promise<void>;
 }
