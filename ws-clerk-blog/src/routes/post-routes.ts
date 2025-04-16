@@ -32,7 +32,7 @@ router.get(
 );
 
 router.post(
-  "/api/webhooks",
+  "/api/webhooks/deleted-user",
   deleteUserPostsController.handle.bind(deleteUserPostsController)
 );
 
