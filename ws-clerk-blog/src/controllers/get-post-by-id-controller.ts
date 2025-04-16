@@ -5,10 +5,16 @@ export class GetPostByIdController {
   constructor(private postRepository: IPostRepository) {}
 
   async handle(req: Request, res: Response) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const post = await this.postRepository.getById(id);
+      const post = await this.postRepository.getById(id);
 
-    res.status(200).json(post);
+      res.status(200).json(post);
+    } catch (err) {
+      res.status(400).json({
+        err,
+      });
+    }
   }
 }

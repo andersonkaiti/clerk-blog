@@ -5,8 +5,14 @@ export class GetPostsController {
   constructor(private postRepository: IPostRepository) {}
 
   async handle(_req: Request, res: Response) {
-    const posts = await this.postRepository.get();
+    try {
+      const posts = await this.postRepository.get();
 
-    res.status(200).json(posts);
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(400).json({
+        err,
+      });
+    }
   }
 }
