@@ -20,6 +20,25 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  async update({ email_addresses, ...user }: IUser["data"]): Promise<void> {
+    await this.database.users.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        ...user,
+        email_addresses: {
+          deleteMany: {},
+          create: email_addresses.map((email) => ({
+            id: email.id,
+            email_address: email.email_address,
+            object: email.object,
+          })),
+        },
+      },
+    });
+  }
+
   async delete(id: string): Promise<void> {
     await this.database.users.delete({
       include: {

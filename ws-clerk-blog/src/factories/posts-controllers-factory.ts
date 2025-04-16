@@ -1,6 +1,4 @@
 import { PostRepository } from "../repositories/post-repository.ts";
-import { UserRepository } from "../repositories/user-repository.ts";
-import { ClerkWeebhookServiceFactory } from "./clerk-webhook-service-factory.ts";
 import { database } from "../../config/database.ts";
 import { CreatePostController } from "../controllers/create-post-controller.ts";
 import { GetUserPostsController } from "../controllers/get-user-posts-controller.ts";
