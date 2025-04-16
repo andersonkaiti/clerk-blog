@@ -1,5 +1,7 @@
 import { Router } from "express";
-import {
+import { PostsControllersFactory } from "../factories/posts-controllers-factory";
+
+const {
   createPostController,
   deletePostController,
   deleteUserPostsController,
@@ -7,7 +9,7 @@ import {
   getPostsController,
   getUserPostsController,
   updatePostController,
-} from "../di/posts.ts";
+} = new PostsControllersFactory().createControllers();
 
 const router = Router();
 
