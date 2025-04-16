@@ -31,13 +31,13 @@ export default function CreatePost() {
             id="title"
             className={twMerge(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.text && "border-red-500"),
+              clsx(state?.errors.title && "border-red-500"),
             )}
             name="title"
           />
           {state && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
-              {state.errors.text}
+              {state.errors.title}
             </p>
           )}
         </div>
@@ -55,7 +55,7 @@ export default function CreatePost() {
             id="text"
             className={twMerge(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.title && "border-red-500"),
+              clsx(state?.errors.text && "border-red-500"),
             )}
             name="text"
           />
