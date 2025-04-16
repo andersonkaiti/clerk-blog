@@ -16,5 +16,33 @@ model Posts {
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
 
+  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("posts")
+}
+
+model Users {
+  id                String         @id
+  created_at        DateTime
+  email_addresses   EmailAddress[] @relation("user_emails")
+  first_name        String?
+  image_url         String?
+  last_name         String?
+  last_sign_in_at   DateTime
+  profile_image_url String?
+  updated_at        DateTime
+  username          String?
+  Posts             Posts[]
+
+  @@map("users")
+}
+
+model EmailAddress {
+  id            String @id
+  email_address String
+  object        String
+  userId        String
+  user          Users  @relation("user_emails", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_address")
 }
