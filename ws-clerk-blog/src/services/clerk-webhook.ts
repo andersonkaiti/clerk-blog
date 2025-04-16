@@ -1,14 +1,11 @@
 import { type Request } from "express";
 import { Webhook } from "svix";
-import {
-  type IClerkWeebhookService,
-  type IClerkWeebhookServiceReturn,
-} from "./iclerk-webhook";
+import { type IClerkWeebhookService } from "./iclerk-webhook";
 
 export class ClerkWeebhookService implements IClerkWeebhookService {
   constructor(private webhook: Webhook) {}
 
-  async verify(req: Request): Promise<IClerkWeebhookServiceReturn> {
+  async verify<R>(req: Request): Promise<R | undefined> {
     const {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
@@ -27,12 +24,11 @@ export class ClerkWeebhookService implements IClerkWeebhookService {
     };
 
     try {
-      return this.webhook.verify(
-        payload,
-        headers
-      ) as IClerkWeebhookServiceReturn;
+      return this.webhook.verify(payload, headers) as R;
     } catch (err) {
-      throw new Error("Falha na verificação do webhook.");
+      if (err instanceof Error) {
+        throw new Error(err.message);
+      }
     }
   }
 }

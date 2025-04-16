@@ -4,7 +4,6 @@ import { PostsControllersFactory } from "../factories/posts-controllers-factory"
 const {
   createPostController,
   deletePostController,
-  deleteUserPostsController,
   getPostByIDController,
   getPostsController,
   getUserPostsController,
@@ -29,11 +28,6 @@ router.get(
 router.get(
   "/by-post-id/:id",
   getPostByIDController.handle.bind(getPostByIDController)
-);
-
-router.post(
-  "/api/webhooks/deleted-user",
-  deleteUserPostsController.handle.bind(deleteUserPostsController)
 );
 
 export { router as postRoutes };

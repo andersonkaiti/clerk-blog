@@ -18,6 +18,13 @@ export class PostRepository implements IPostRepository {
       where: {
         deleted: false,
       },
+      include: {
+        user: {
+          include: {
+            email_addresses: true,
+          },
+        },
+      },
     });
   }
 
@@ -72,14 +79,6 @@ export class PostRepository implements IPostRepository {
       },
       where: {
         id,
-      },
-    });
-  }
-
-  async deleteUserPosts(userId: string): Promise<void> {
-    await this.database.posts.deleteMany({
-      where: {
-        userId,
       },
     });
   }

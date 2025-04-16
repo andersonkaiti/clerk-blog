@@ -1,10 +1,10 @@
 import { type Request, type Response } from "express";
-import { IPostRepository } from "../repositories/ipost-repository";
 import { IClerkWeebhookService } from "../services/iclerk-webhook";
+import { IUserRepository } from "../repositories/iuser-repository";
 
-export class DeleteUserPostsControler {
+export class DeleteUserControler {
   constructor(
-    private postRepository: IPostRepository,
+    private userRepository: IUserRepository,
     private clerkWebhookService: IClerkWeebhookService
   ) {}
 
@@ -16,10 +16,10 @@ export class DeleteUserPostsControler {
       } = await this.clerkWebhookService.verify(req);
 
       if (eventType === "user.deleted") {
-        await this.postRepository.deleteUserPosts(id);
+        await this.userRepository.delete(id);
 
         res.status(200).json({
-          message: "Posts deletados com sucesso!",
+          message: "Posts e usuário deletados com sucesso!",
         });
       }
 
