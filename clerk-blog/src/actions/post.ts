@@ -1,7 +1,7 @@
 "use server";
 
 import { api } from "@adapters/index";
-import { auth, clerkClient, User } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { BASE_URL } from "@config/index";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -112,28 +112,37 @@ export interface IUserPost {
   title: string;
   text: string;
   userId: string;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
+  deleted: boolean;
+  user: User;
+}
+
+export interface User {
   id: string;
-  user: User[];
+  created_at: Date;
+  first_name: string;
+  image_url: string;
+  last_name: string;
+  last_sign_in_at: Date;
+  profile_image_url: string;
+  updated_at: Date;
+  username: null;
+  email_addresses: EmailAddress[];
+}
+
+export interface EmailAddress {
+  id: string;
+  email_address: string;
+  object: string;
+  userId: string;
 }
 
 export async function getAllPosts() {
-  const posts: IUserPost[] = await api.get<IUserPost>({
+  return await api.get<IUserPost>({
     url: `${BASE_URL}/post`,
   });
-
-  const usersIds = [...new Set(posts?.map((post) => post.userId))];
-
-  const client = await clerkClient();
-
-  const users: User[] = (await client.users.getUserList({ userId: usersIds }))
-    .data;
-
-  return posts.map((post) => ({
-    ...post,
-    user: users.filter((user) => user.id === post.userId),
-  }));
 }
 
 export async function getPostByID(id: string) {
