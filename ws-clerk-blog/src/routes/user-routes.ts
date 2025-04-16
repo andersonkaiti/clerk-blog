@@ -3,8 +3,13 @@ import { UserControllersFactory } from "../factories/user-controllers-factory";
 
 const router = Router();
 
-const { deleteUserPostsController } =
+const { createUserController, deleteUserPostsController } =
   new UserControllersFactory().createController();
+
+router.post(
+  "/api/webhooks/created-user",
+  createUserController.handle.bind(createUserController)
+);
 
 router.post(
   "/api/webhooks/deleted-user",
