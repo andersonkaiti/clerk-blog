@@ -1,10 +1,11 @@
-import { getUserPosts, IUserPost } from "@actions/post";
+import { getUserPosts } from "@actions/post";
 import { DeleteDialog } from "@components/delete-dialog";
 import { Table } from "@components/table";
 import { parseTime } from "@utils/parse-time";
 import { CirclePlus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { IUserPost } from "types/user-post";
 
 export default async function Dashboard() {
   const posts: IUserPost[] = await getUserPosts();

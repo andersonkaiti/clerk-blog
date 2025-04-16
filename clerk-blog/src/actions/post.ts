@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { BASE_URL } from "@config/index";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { IUserPost } from "types/user-post";
 import z from "zod";
 
 const postSchema = z.object({
@@ -106,30 +107,6 @@ export async function getUserPosts() {
   return await api.get<IUserPost>({
     url: `${BASE_URL}/post/by-user-id/${session.userId}`,
   });
-}
-
-export interface IUserPost {
-  title: string;
-  text: string;
-  userId: string;
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deleted: boolean;
-  user: User;
-}
-
-export interface User {
-  id: string;
-  created_at: Date;
-  first_name: string;
-  image_url: string;
-  last_name: string;
-  last_sign_in_at: Date;
-  profile_image_url: string;
-  updated_at: Date;
-  username: null;
-  email_addresses: EmailAddress[];
 }
 
 export interface EmailAddress {

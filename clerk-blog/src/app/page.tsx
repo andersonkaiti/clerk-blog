@@ -1,5 +1,6 @@
-import { getAllPosts, IUserPost } from "@actions/post";
+import { getAllPosts } from "@actions/post";
 import { PostCard } from "@components/post-card";
+import { IUserPost } from "types/user-post";
 
 export default async function Home() {
   const posts: IUserPost[] = await getAllPosts();

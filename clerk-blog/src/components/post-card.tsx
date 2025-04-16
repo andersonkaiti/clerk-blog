@@ -1,5 +1,5 @@
-import { IUserPost } from "@actions/post";
 import Link from "next/link";
+import { IUserPost } from "types/user-post";
 
 export interface IPostCardProps {
   post: IUserPost;
