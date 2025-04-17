@@ -1,10 +1,9 @@
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@utils/cn";
 import { ITableProps } from ".";
 
 export function TableHeadTitle({ children, className }: ITableProps) {
   return (
-    <th scope="col" className={twMerge("px-6 py-3", clsx(className))}>
+    <th scope="col" className={cn("px-6 py-3", className)}>
       {children}
     </th>
   );

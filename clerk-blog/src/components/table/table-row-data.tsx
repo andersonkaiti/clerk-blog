@@ -1,11 +1,8 @@
-import { twMerge } from "tailwind-merge";
+import { cn } from "@utils/cn";
 import { ITableProps } from ".";
-import clsx from "clsx";
 
 export function TableRowData({ children, className }: ITableProps) {
   return (
-    <td className={twMerge("flex items-center px-6 py-4", clsx(className))}>
-      {children}
-    </td>
+    <td className={cn("flex items-center px-6 py-4", className)}>{children}</td>
   );
 }

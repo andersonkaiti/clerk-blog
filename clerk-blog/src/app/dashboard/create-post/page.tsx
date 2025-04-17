@@ -1,11 +1,10 @@
 "use client";
 
-import { createPost } from "@actions/post";
+import { createPost } from "@actions/create-post";
 import { Spinner } from "@components/spinner";
-import clsx from "clsx";
+import { cn } from "@utils/cn";
 import Form from "next/form";
 import { useActionState } from "react";
-import { twMerge } from "tailwind-merge";
 
 export default function CreatePost() {
   const [state, createPostAction, pending] = useActionState(createPost, null);
@@ -19,9 +18,9 @@ export default function CreatePost() {
         <div className="w-full space-y-2">
           <label
             htmlFor="title"
-            className={twMerge(
+            className={cn(
               "mb-2 block text-sm font-medium text-gray-900 dark:text-white",
-              clsx(state?.errors.title && "text-red-500"),
+              state?.errors.title && "text-red-500",
             )}
           >
             Título
@@ -29,9 +28,9 @@ export default function CreatePost() {
           <input
             type="text"
             id="title"
-            className={twMerge(
+            className={cn(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.title && "border-red-500"),
+              state?.errors.title && "border-red-500",
             )}
             name="title"
           />
@@ -44,18 +43,18 @@ export default function CreatePost() {
         <div className="w-full space-y-2">
           <label
             htmlFor="text"
-            className={twMerge(
+            className={cn(
               "mb-2 block text-sm font-medium text-gray-900 dark:text-white",
-              clsx(state?.errors.text && "text-red-500"),
+              state?.errors.text && "text-red-500",
             )}
           >
             Texto
           </label>
           <textarea
             id="text"
-            className={twMerge(
+            className={cn(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.text && "border-red-500"),
+              state?.errors.text && "border-red-500",
             )}
             name="text"
           />
