@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { IUserRepository } from "../repositories/iuser-repository";
 import { IClerkWeebhookService } from "../services/iclerk-webhook";
 import { IUser } from "../models/user";

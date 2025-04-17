@@ -27,10 +27,12 @@ export class DeleteUserControler {
         message: "Evento não tratado.",
       });
     } catch (err) {
-      res.status(400).json({
-        message: "Falha na verificação do webhook.",
-        err,
-      });
+      if (err instanceof Error) {
+        res.status(400).json({
+          message: "Falha na verificação do webhook.",
+          error: err.message,
+        });
+      }
     }
   }
 }
