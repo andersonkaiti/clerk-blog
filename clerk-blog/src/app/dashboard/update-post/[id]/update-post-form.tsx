@@ -1,31 +1,34 @@
 "use client";
 
-import { IPost, updatePost } from "@actions/post";
 import { useActionState } from "react";
-import { Spinner } from "./spinner";
 import Form from "next/form";
-import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
+import { Spinner } from "../../../../components/spinner";
+import { IPost } from "types/user-post";
+import { cn } from "@utils/cn";
+import { updatePost } from "@actions/update-post";
 
-export interface IUpdatePostProps {
+export interface IUpdateFormProps {
   post: IPost;
 }
 
-export function UpdatePost({ post }: IUpdatePostProps) {
+export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
   const [state, updatePostAction, pending] = useActionState(
-    updatePost.bind(null, post.id),
+    updatePost.bind(null, id),
     null,
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
-      <Form action={updatePostAction} className="mx-auto w-4xl space-y-4 px-16">
-        <div className="w-full space-y-2">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center gap-4">
+      <Form
+        action={updatePostAction}
+        className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"
+      >
+        <div className="space-y-2">
           <label
             htmlFor="title"
-            className={twMerge(
+            className={cn(
               "mb-2 block text-sm font-medium text-gray-900 dark:text-white",
-              clsx(state?.errors.title && "text-red-500"),
+              state?.errors.title && "text-red-500",
             )}
           >
             Título
@@ -33,12 +36,12 @@ export function UpdatePost({ post }: IUpdatePostProps) {
           <input
             type="text"
             id="title"
-            className={twMerge(
+            className={cn(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.title && "border-red-500"),
+              state?.errors.title && "border-red-500",
             )}
             name="title"
-            defaultValue={post.title}
+            defaultValue={title}
           />
           {state && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -46,24 +49,24 @@ export function UpdatePost({ post }: IUpdatePostProps) {
             </p>
           )}
         </div>
-        <div className="w-full space-y-2">
+        <div className="space-y-2">
           <label
             htmlFor="text"
-            className={twMerge(
+            className={cn(
               "mb-2 block text-sm font-medium text-gray-900 dark:text-white",
-              clsx(state?.errors.text && "text-red-500"),
+              state?.errors.text && "text-red-500",
             )}
           >
             Texto
           </label>
           <textarea
             id="text"
-            className={twMerge(
+            className={cn(
               "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
-              clsx(state?.errors.text && "border-red-500"),
+              state?.errors.text && "border-red-500",
             )}
             name="text"
-            defaultValue={post.text}
+            defaultValue={text}
           />
           {state && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -73,7 +76,7 @@ export function UpdatePost({ post }: IUpdatePostProps) {
         </div>
         <button
           type="submit"
-          className="w-full cursor-pointer rounded-lg border border-gray-600 bg-neutral-950 px-5 py-2.5 text-sm font-medium text-white hover:border-gray-600 hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-700 focus:outline-none"
+          className="flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-neutral-950 px-5 py-2.5 text-sm font-medium text-white hover:border-gray-600 hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-700 focus:outline-none"
         >
           {pending && <Spinner />}
           Atualizar post
