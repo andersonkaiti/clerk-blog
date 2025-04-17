@@ -1,4 +1,5 @@
-import { deletePost } from "@actions/post";
+import { Trash } from "lucide-react";
+import Form from "next/form";
 import {
   Dialog,
   DialogContent,
@@ -6,11 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@components/ui/dialog";
-import { Trash } from "lucide-react";
-import Form from "next/form";
-import { IUserPost } from "types/user-post";
+import { deletePost } from "@actions/delete-post";
+import { IPost } from "types/user-post";
 
-export function DeleteDialog({ post }: { post: IUserPost }) {
+export function DeleteDialog({ post }: { post: IPost }) {
   return (
     <Dialog>
       <DialogTrigger className="flex cursor-pointer items-center gap-1 font-medium text-red-500 hover:underline">

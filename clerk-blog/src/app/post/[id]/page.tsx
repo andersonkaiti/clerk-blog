@@ -1,6 +1,6 @@
-import { getPostByID } from "@actions/post";
-import { DottedBackground } from "@components/dotted-background";
 import { parseTime } from "@utils/parse-time";
+import { DottedBackground } from "@components/dotted-background";
+import { getPostByID } from "@actions/get-post-by-id";
 
 export default async function Post({
   params,

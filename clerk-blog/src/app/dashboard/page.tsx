@@ -1,14 +1,14 @@
-import { getUserPosts } from "@actions/post";
-import { DeleteDialog } from "@components/delete-dialog";
-import { Table } from "@components/table";
+import { Fragment } from "react";
 import { parseTime } from "@utils/parse-time";
 import { CirclePlus, Pencil } from "lucide-react";
 import Link from "next/link";
-import { Fragment } from "react";
-import { IUserPost } from "types/user-post";
+import { DeleteDialog } from "@components/delete-dialog";
+import { Table } from "@components/table";
+import { getUserPosts } from "@actions/get-user-posts";
+import { IPost } from "types/user-post";
 
 export default async function Dashboard() {
-  const posts: IUserPost[] = await getUserPosts();
+  const posts: IPost[] = await getUserPosts();
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center justify-center lg:w-fit">
@@ -31,7 +31,7 @@ export default async function Dashboard() {
             </Table.Title>
           </Table.Head>
           <Table.Body>
-            {posts?.map((post: IUserPost, index: number) => (
+            {posts?.map((post: IPost, index: number) => (
               <Fragment key={index}>
                 <Table.Row>
                   <Table.RowHead>{post.title}</Table.RowHead>

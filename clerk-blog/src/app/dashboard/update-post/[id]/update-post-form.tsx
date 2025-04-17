@@ -1,11 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
-import Form from "next/form";
-import { Spinner } from "../../../../components/spinner";
-import { IPost } from "types/user-post";
 import { cn } from "@utils/cn";
+import Form from "next/form";
 import { updatePost } from "@actions/update-post";
+import { IPost } from "types/user-post";
+import { Spinner } from "../../../../components/spinner";
 
 export interface IUpdateFormProps {
   post: IPost;

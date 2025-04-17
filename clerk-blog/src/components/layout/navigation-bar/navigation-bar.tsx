@@ -1,12 +1,12 @@
 "use client";
 
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { NavButton } from "./nav-button";
 import { dark } from "@clerk/themes";
+import { cn } from "@utils/cn";
+import Link from "next/link";
 import { useNavigationBar } from "@hooks/navigation-bar.hook";
 import { MenuButton } from "./menu-button";
-import Link from "next/link";
-import { cn } from "@utils/cn";
+import { NavButton } from "./nav-button";
 
 export function NavigationBar() {
   const { navigationBarRef, showNavigationBar, setShowNavigationBar } =

@@ -1,5 +1,5 @@
-import Link, { LinkProps } from "next/link";
 import { ReactNode } from "react";
+import Link, { LinkProps } from "next/link";
 
 export interface INavButtonProps extends LinkProps {
   children: ReactNode;

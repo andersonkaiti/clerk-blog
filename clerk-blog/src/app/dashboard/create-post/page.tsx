@@ -1,10 +1,10 @@
 "use client";
 
-import { createPost } from "@actions/create-post";
-import { Spinner } from "@components/spinner";
+import { useActionState } from "react";
 import { cn } from "@utils/cn";
 import Form from "next/form";
-import { useActionState } from "react";
+import { Spinner } from "@components/spinner";
+import { createPost } from "@actions/create-post";
 
 export default function CreatePost() {
   const [state, createPostAction, pending] = useActionState(createPost, null);
