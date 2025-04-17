@@ -1,11 +1,4 @@
-import { IHttpClient } from "./http-client";
-
-interface IFetchAdapter {
-  get<T>({ url, body }: IHttpClient): Promise<T[]>;
-  post<T>({ url, body }: IHttpClient): Promise<T>;
-  put<T>({ url, body }: IHttpClient): Promise<T>;
-  delete({ url }: IHttpClient): Promise<void>;
-}
+import { IFetchAdapter, IHttpClient } from "./http-client";
 
 export class FetchAdapter implements IFetchAdapter {
   private async request({ url, body, config }: IHttpClient) {
