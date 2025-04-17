@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { IPostRepository } from "../repositories/ipost-repository";
 
 export class DeletePostController {
@@ -14,9 +14,11 @@ export class DeletePostController {
         message: "Post deletado.",
       });
     } catch (err) {
-      res.status(400).json({
-        err,
-      });
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message,
+        });
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { cn } from "@utils/cn";
 
 export interface IMenuButtonProps {
   showNavigationBar: boolean;
@@ -18,21 +17,21 @@ export function MenuButton({
       }}
     >
       <div
-        className={twMerge(
+        className={cn(
           "h-[2px] w-[50%] origin-left translate-y-[0.45rem] rounded-sm bg-white transition-all duration-300",
-          clsx(showNavigationBar && "rotate-[-45deg]"),
+          showNavigationBar && "rotate-[-45deg]",
         )}
       ></div>
       <div
-        className={twMerge(
+        className={cn(
           "h-[2px] w-[50%] origin-center rounded-md bg-white transition-all duration-300",
-          clsx(showNavigationBar && "hidden"),
+          showNavigationBar && "hidden",
         )}
       ></div>
       <div
-        className={twMerge(
+        className={cn(
           "h-[2px] w-[50%] origin-left -translate-y-[0.45rem] rounded-md bg-white transition-all duration-300",
-          clsx(showNavigationBar && "rotate-[45deg]"),
+          showNavigationBar && "rotate-[45deg]",
         )}
       ></div>
     </div>

@@ -10,9 +10,11 @@ export class UpdatePostController {
 
       res.status(200).json(post);
     } catch (err) {
-      res.status(400).json({
-        err,
-      });
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message,
+        });
+      }
     }
   }
 }

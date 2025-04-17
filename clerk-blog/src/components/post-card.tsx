@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { IUserPost } from "types/user-post";
+import { IPost } from "types/user-post";
 
 export interface IPostCardProps {
-  post: IUserPost;
+  post: IPost;
 }
 
 export function PostCard({ post }: IPostCardProps) {

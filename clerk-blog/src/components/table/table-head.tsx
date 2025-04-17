@@ -1,13 +1,12 @@
-import { twMerge } from "tailwind-merge";
+import { cn } from "@utils/cn";
 import { ITableProps } from ".";
-import clsx from "clsx";
 
 export function TableHead({ children, className }: ITableProps) {
   return (
     <thead
-      className={twMerge(
+      className={cn(
         "bg-neutral-900 text-xs text-gray-400 uppercase",
-        clsx(className),
+        className,
       )}
     >
       <tr>{children}</tr>
