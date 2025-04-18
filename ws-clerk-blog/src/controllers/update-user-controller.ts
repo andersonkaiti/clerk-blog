@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
-import { IUserRepository } from "../repositories/iuser-repository";
-import { IClerkWeebhookService } from "../services/iclerk-webhook";
-import { IUser } from "../models/user";
+import type { IUserRepository } from "../repositories/iuser-repository.d.ts";
+import type { IClerkWeebhookService } from "../services/iclerk-webhook.d.ts";
+import type { IUserUpdatedEvent } from "../models/iuser-updated-event.d.ts";
 
 export class UpdateUserController {
   constructor(
@@ -11,34 +11,23 @@ export class UpdateUserController {
 
   async handle(req: Request, res: Response) {
     try {
+      const event = await this.clerkWebhookService.verify<IUserUpdatedEvent>(
+        req
+      );
+
+      if (!event) throw new Error("Falha na verificação do webhook.");
+
       const {
-        data: {
-          created_at,
-          last_sign_in_at,
-          updated_at,
-          email_addresses,
-          id,
-          first_name,
-          image_url,
-          last_name,
-          profile_image_url,
-          username,
-        },
+        data: { created_at, last_sign_in_at, updated_at, ...userData },
         type: eventType,
-      } = (await this.clerkWebhookService.verify(req)) as IUser;
+      } = event;
 
       if (eventType === "user.updated") {
         await this.userRepository.update({
           created_at: new Date(created_at),
           last_sign_in_at: new Date(last_sign_in_at),
           updated_at: new Date(updated_at),
-          email_addresses,
-          id,
-          first_name,
-          image_url,
-          last_name,
-          profile_image_url,
-          username,
+          ...userData,
         });
 
         res.status(200).json({
@@ -48,7 +37,6 @@ export class UpdateUserController {
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
-          message: "Falha na verificação do webhook.",
           error: err.message,
         });
       }

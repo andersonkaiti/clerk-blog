@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PostsControllersFactory } from "../factories/posts-controllers-factory";
+import { PostsControllersFactory } from "../factories/posts-controllers-factory.ts";
 
 const {
   createPostController,

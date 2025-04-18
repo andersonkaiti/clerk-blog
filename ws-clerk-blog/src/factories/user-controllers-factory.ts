@@ -1,9 +1,9 @@
-import { UserRepository } from "../repositories/user-repository";
-import { database } from "../../config/database";
-import { ClerkWeebhookServiceFactory } from "./clerk-webhook-service-factory";
-import { CreateUserController } from "../controllers/create-user-controller";
-import { UpdateUserController } from "../controllers/update-user-controller";
-import { DeleteUserControler } from "../controllers/delete-user";
+import { UserRepository } from "../repositories/user-repository.ts";
+import { database } from "../../config/database.ts";
+import { ClerkWeebhookServiceFactory } from "./clerk-webhook-service-factory.ts";
+import { CreateUserController } from "../controllers/create-user-controller.ts";
+import { UpdateUserController } from "../controllers/update-user-controller.ts";
+import { DeleteUserControler } from "../controllers/delete-user.ts";
 import { config } from "dotenv";
 config();
 

@@ -1,28 +1,22 @@
 import { Trash } from "lucide-react";
 import Form from "next/form";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@components/ui/dialog";
+import * as Dialog from "@components/ui/dialog";
 import { deletePost } from "@actions/delete-post";
 import { IPost } from "types/user-post";
 
 export function DeleteDialog({ post }: { post: IPost }) {
   return (
-    <Dialog>
-      <DialogTrigger className="flex cursor-pointer items-center gap-1 font-medium text-red-500 hover:underline">
+    <Dialog.Root>
+      <Dialog.Trigger className="flex cursor-pointer items-center gap-1 font-medium text-red-500 hover:underline">
         <Trash color="oklch(63.7% 0.237 25.331)" size={14} />
         Remover
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
+      </Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>
             Você tem certeza de que deseja deletar a publicação?
-          </DialogTitle>
-        </DialogHeader>
+          </Dialog.Title>
+        </Dialog.Header>
         <Form action={deletePost.bind(null, post.userId, post.id)}>
           <button
             type="submit"
@@ -32,7 +26,7 @@ export function DeleteDialog({ post }: { post: IPost }) {
             Remover
           </button>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </Dialog.Content>
+    </Dialog.Root>
   );
 }
