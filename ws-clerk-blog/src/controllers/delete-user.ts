@@ -1,6 +1,7 @@
 import { type Request, type Response } from "express";
 import { IClerkWeebhookService } from "../services/iclerk-webhook";
 import { IUserRepository } from "../repositories/iuser-repository";
+import { IUserDeletedEvent } from "../models/iuser-deleted-event";
 
 export class DeleteUserControler {
   constructor(
@@ -10,10 +11,16 @@ export class DeleteUserControler {
 
   async handle(req: Request, res: Response) {
     try {
+      const event = await this.clerkWebhookService.verify<IUserDeletedEvent>(
+        req
+      );
+
+      if (!event) throw new Error("Falha na verificação do webhook.");
+
       const {
         type: eventType,
         data: { id },
-      } = await this.clerkWebhookService.verify(req);
+      } = event;
 
       if (eventType === "user.deleted") {
         await this.userRepository.delete(id);
@@ -29,7 +36,6 @@ export class DeleteUserControler {
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
-          message: "Falha na verificação do webhook.",
           error: err.message,
         });
       }

@@ -1,7 +1,8 @@
-import { IUser } from "../models/user";
+import { IUser as IUserCreated } from "../models/iuser-created-event";
+import { IUser as IUserUpdated } from "../models/iuser-updated-event";
 
 export interface IUserRepository {
-  create(user: IUser["data"]): Promise<void>;
-  update(user: IUser["data"]): Promise<void>;
+  create(user: IUserCreated): Promise<void>;
+  update(user: IUserUpdated): Promise<void>;
   delete(id: string): Promise<void>;
 }

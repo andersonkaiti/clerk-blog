@@ -5,7 +5,7 @@ import { type IClerkWeebhookService } from "./iclerk-webhook";
 export class ClerkWeebhookService implements IClerkWeebhookService {
   constructor(private webhook: Webhook) {}
 
-  async verify<R>(req: Request): Promise<R | undefined> {
+  async verify<T>(req: Request): Promise<T | undefined> {
     const {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
@@ -24,7 +24,7 @@ export class ClerkWeebhookService implements IClerkWeebhookService {
     };
 
     try {
-      return this.webhook.verify(payload, headers) as R;
+      return this.webhook.verify(payload, headers) as T;
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(err.message);
