@@ -49,8 +49,8 @@ function Content({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
   return (
-    <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
+    <Portal data-slot="dialog-portal">
+      <Overlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
@@ -65,7 +65,7 @@ function Content({
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
-    </DialogPortal>
+    </Portal>
   );
 }
 
