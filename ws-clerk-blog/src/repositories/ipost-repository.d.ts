@@ -1,10 +1,11 @@
 import type { IPost } from "../models/post.d.ts";
+import type { ITransformedPosts } from "../models/itransformed-post.d.ts";
 
 export interface IPostRepository {
-  get(): Promise<IPost[]>;
-  getByUserId(userId: string): Promise<IPost[]>;
-  getById(id: string): Promise<IPost[] | null>;
-  create(data: IPost): Promise<IPost>;
-  update(data: IPost): Promise<IPost>;
+  get(): Promise<ITransformedPosts[]>;
+  getByUserId(userId: string): Promise<ITransformedPosts[]>;
+  getById(id: string): Promise<ITransformedPosts[] | null>;
+  create(data: IPost): Promise<ITransformedPosts>;
+  update(data: IPost): Promise<ITransformedPosts>;
   delete(id: string): Promise<void>;
 }
