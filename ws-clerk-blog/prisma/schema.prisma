@@ -8,8 +8,8 @@ datasource db {
 }
 
 model Posts {
-  title     String
-  text      String
+  title     Bytes
+  text      Bytes
   userId    String
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())

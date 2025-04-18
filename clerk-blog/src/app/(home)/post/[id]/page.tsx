@@ -13,10 +13,13 @@ export default async function Post({
 
   return (
     <DottedBackground>
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl flex-col items-center justify-center space-y-4">
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          {post.title}
-        </h1>
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-7xl flex-col items-center justify-center space-y-4 px-8">
+        <h1
+          className="text-2xl font-bold tracking-tight text-white"
+          dangerouslySetInnerHTML={{
+            __html: post.title.replace(/\n?\r/g, "<br />"),
+          }}
+        />
         <h1 className="text-xs text-gray-400">
           Publicado: {parseTime(post.createdAt)}
         </h1>
@@ -24,7 +27,11 @@ export default async function Post({
           Última atualização: {parseTime(post.updatedAt)}
         </h1>
 
-        <h1>{post.text}</h1>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: post.text.replace(/\n?\r/g, "<br />"),
+          }}
+        />
       </div>
     </DottedBackground>
   );
