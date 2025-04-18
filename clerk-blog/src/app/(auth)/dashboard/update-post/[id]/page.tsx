@@ -1,5 +1,5 @@
-import { UpdateForm } from "@/app/dashboard/update-post/[id]/update-post-form";
 import { getPostByIDToUpdate } from "@actions/get-post-by-id-to-update";
+import { UpdateForm } from "./update-post-form";
 
 export interface IUpdatePageProps {
   params: Promise<{ id: string }>;

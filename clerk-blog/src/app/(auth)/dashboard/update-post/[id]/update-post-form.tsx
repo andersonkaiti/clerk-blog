@@ -3,9 +3,9 @@
 import { useActionState } from "react";
 import { cn } from "@utils/cn";
 import Form from "next/form";
+import { Spinner } from "@components/spinner";
 import { updatePost } from "@actions/update-post";
 import { IPost } from "types/user-post";
-import { Spinner } from "../../../../components/spinner";
 
 export interface IUpdateFormProps {
   post: IPost;
