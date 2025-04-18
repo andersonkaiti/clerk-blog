@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
-import { IClerkWeebhookService } from "../services/iclerk-webhook";
-import { IUserRepository } from "../repositories/iuser-repository";
-import { IUserCreatedEvent } from "../models/iuser-created-event";
+import type { IClerkWeebhookService } from "../services/iclerk-webhook.d.ts";
+import type { IUserRepository } from "../repositories/iuser-repository.d.ts";
+import type { IUserCreatedEvent } from "../models/iuser-created-event.d.ts";
 
 export class CreateUserController {
   constructor(

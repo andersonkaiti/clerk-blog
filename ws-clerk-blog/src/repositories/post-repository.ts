@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { IPostRepository } from "./ipost-repository";
-import { IPost } from "../models/post";
+import type { IPostRepository } from "./ipost-repository.d.ts";
+import type { IPost } from "../models/post.d.ts";
 
 export class PostRepository implements IPostRepository {
   constructor(private database: PrismaClient) {}

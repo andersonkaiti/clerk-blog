@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { IPostRepository } from "../repositories/ipost-repository";
+import type { IPostRepository } from "../repositories/ipost-repository.d.ts";
 
 export class GetPostByIdController {
   constructor(private postRepository: IPostRepository) {}

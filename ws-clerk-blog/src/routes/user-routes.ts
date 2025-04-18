@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserControllersFactory } from "../factories/user-controllers-factory";
+import { UserControllersFactory } from "../factories/user-controllers-factory.ts";
 
 const router = Router();
 

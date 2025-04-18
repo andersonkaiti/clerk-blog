@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { IUserRepository } from "./iuser-repository";
-import { IUser as IUserCreated } from "../models/iuser-created-event";
-import { IUser as IUserUpdated } from "../models/iuser-updated-event";
+import type { IUserRepository } from "./iuser-repository.d.ts";
+import type { IUser as IUserCreated } from "../models/iuser-created-event.d.ts";
+import type { IUser as IUserUpdated } from "../models/iuser-updated-event.d.ts";
 
 export class UserRepository implements IUserRepository {
   constructor(private database: PrismaClient) {}

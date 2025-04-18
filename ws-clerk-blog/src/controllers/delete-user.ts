@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
-import { IClerkWeebhookService } from "../services/iclerk-webhook";
-import { IUserRepository } from "../repositories/iuser-repository";
-import { IUserDeletedEvent } from "../models/iuser-deleted-event";
+import type { IClerkWeebhookService } from "../services/iclerk-webhook.d.ts";
+import type { IUserRepository } from "../repositories/iuser-repository.d.ts";
+import type { IUserDeletedEvent } from "../models/iuser-deleted-event.d.ts";
 
 export class DeleteUserControler {
   constructor(

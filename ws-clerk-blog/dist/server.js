@@ -1,6 +1,4 @@
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
@@ -16,7 +14,6 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __objRest = (source, exclude) => {
   var target = {};
   for (var prop in source)
@@ -157,15 +154,6 @@ var PostRepository = class {
       });
     });
   }
-  deleteUserPosts(userId) {
-    return __async(this, null, function* () {
-      yield this.database.posts.deleteMany({
-        where: {
-          userId
-        }
-      });
-    });
-  }
 };
 
 // config/database.ts
@@ -183,9 +171,11 @@ var CreatePostController = class {
         const post = this.postRepository.create(req.body);
         res.status(201).json(post);
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -203,9 +193,11 @@ var GetUserPostsController = class {
         const posts = yield this.postRepository.getByUserId(userId);
         res.status(200).json(posts);
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -222,9 +214,11 @@ var GetPostsController = class {
         const posts = yield this.postRepository.get();
         res.status(200).json(posts);
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -242,9 +236,11 @@ var GetPostByIdController = class {
         const post = yield this.postRepository.getById(id);
         res.status(200).json(post);
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -261,9 +257,11 @@ var UpdatePostController = class {
         const post = this.postRepository.update(req.body);
         res.status(200).json(post);
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -283,9 +281,11 @@ var DeletePostController = class {
           message: "Post deletado."
         });
       } catch (err) {
-        res.status(400).json({
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -345,11 +345,28 @@ var UserRepository = class {
   constructor(database2) {
     this.database = database2;
   }
-  create(_a) {
-    return __async(this, null, function* () {
-      var _b = _a, { email_addresses } = _b, user = __objRest(_b, ["email_addresses"]);
+  create(_0) {
+    return __async(this, arguments, function* ({
+      email_addresses,
+      created_at,
+      first_name,
+      image_url,
+      last_name,
+      last_sign_in_at,
+      profile_image_url,
+      updated_at,
+      id
+    }) {
       yield this.database.users.create({
-        data: __spreadProps(__spreadValues({}, user), {
+        data: {
+          created_at,
+          first_name,
+          image_url,
+          last_name,
+          last_sign_in_at,
+          profile_image_url,
+          updated_at,
+          id,
           email_addresses: {
             create: email_addresses.map((email) => ({
               id: email.id,
@@ -357,18 +374,36 @@ var UserRepository = class {
               object: email.object
             }))
           }
-        })
+        }
       });
     });
   }
-  update(_c) {
-    return __async(this, null, function* () {
-      var _d = _c, { email_addresses } = _d, user = __objRest(_d, ["email_addresses"]);
+  update(_0) {
+    return __async(this, arguments, function* ({
+      email_addresses,
+      created_at,
+      first_name,
+      image_url,
+      last_name,
+      last_sign_in_at,
+      profile_image_url,
+      updated_at,
+      username,
+      id
+    }) {
       yield this.database.users.update({
         where: {
-          id: user.id
+          id
         },
-        data: __spreadProps(__spreadValues({}, user), {
+        data: {
+          created_at,
+          first_name,
+          image_url,
+          last_name,
+          last_sign_in_at,
+          profile_image_url,
+          updated_at,
+          username,
           email_addresses: {
             deleteMany: {},
             create: email_addresses.map((email) => ({
@@ -377,7 +412,7 @@ var UserRepository = class {
               object: email.object
             }))
           }
-        })
+        }
       });
     });
   }
@@ -446,34 +481,20 @@ var CreateUserController = class {
   handle(req, res) {
     return __async(this, null, function* () {
       try {
+        const event = yield this.clerkWebhookService.verify(
+          req
+        );
+        if (!event) throw new Error("Erro ao verificar webhook.");
         const {
           type: eventType,
-          data: {
-            created_at,
-            last_sign_in_at,
-            updated_at,
-            email_addresses,
-            id,
-            first_name,
-            image_url,
-            last_name,
-            profile_image_url,
-            username
-          }
-        } = yield this.clerkWebhookService.verify(req);
+          data: _a
+        } = event, _b = _a, { created_at, updated_at, last_sign_in_at } = _b, userData = __objRest(_b, ["created_at", "updated_at", "last_sign_in_at"]);
         if (eventType === "user.created") {
-          yield this.userRepository.create({
+          yield this.userRepository.create(__spreadValues({
             created_at: new Date(created_at),
-            last_sign_in_at: new Date(last_sign_in_at),
-            updated_at: new Date(updated_at),
-            email_addresses,
-            id,
-            first_name,
-            image_url,
-            last_name,
-            profile_image_url,
-            username
-          });
+            last_sign_in_at: new Date(created_at),
+            updated_at: new Date(updated_at)
+          }, userData));
           res.status(201).json({
             message: "Usu\xE1rio criado com sucesso!"
           });
@@ -481,7 +502,6 @@ var CreateUserController = class {
       } catch (err) {
         if (err instanceof Error) {
           res.status(400).json({
-            message: "Falha na verifica\xE7\xE3o do webhook.",
             error: err.message
           });
         }
@@ -499,36 +519,21 @@ var UpdateUserController = class {
   handle(req, res) {
     return __async(this, null, function* () {
       try {
-        const {
-          data: {
-            created_at,
-            last_sign_in_at,
-            updated_at,
-            birthday,
-            email_addresses,
-            id,
-            first_name,
-            image_url,
-            last_name,
-            profile_image_url,
-            username
-          },
+        const event = yield this.clerkWebhookService.verify(
+          req
+        );
+        if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
+        const _a = event, {
+          data: _b
+        } = _a, _c = _b, { created_at, last_sign_in_at, updated_at } = _c, userData = __objRest(_c, ["created_at", "last_sign_in_at", "updated_at"]), {
           type: eventType
-        } = yield this.clerkWebhookService.verify(req);
+        } = _a;
         if (eventType === "user.updated") {
-          yield this.userRepository.update({
+          yield this.userRepository.update(__spreadValues({
             created_at: new Date(created_at),
             last_sign_in_at: new Date(last_sign_in_at),
-            updated_at: new Date(updated_at),
-            birthday,
-            email_addresses,
-            id,
-            first_name,
-            image_url,
-            last_name,
-            profile_image_url,
-            username
-          });
+            updated_at: new Date(updated_at)
+          }, userData));
           res.status(200).json({
             message: "Usu\xE1rio atualizado com sucesso!"
           });
@@ -536,7 +541,6 @@ var UpdateUserController = class {
       } catch (err) {
         if (err instanceof Error) {
           res.status(400).json({
-            message: "Falha na verifica\xE7\xE3o do webhook.",
             error: err.message
           });
         }
@@ -545,8 +549,8 @@ var UpdateUserController = class {
   }
 };
 
-// src/controllers/delete-user-posts.ts
-var DeleteUserPostsControler = class {
+// src/controllers/delete-user.ts
+var DeleteUserControler = class {
   constructor(userRepository, clerkWebhookService) {
     this.userRepository = userRepository;
     this.clerkWebhookService = clerkWebhookService;
@@ -554,10 +558,14 @@ var DeleteUserPostsControler = class {
   handle(req, res) {
     return __async(this, null, function* () {
       try {
+        const event = yield this.clerkWebhookService.verify(
+          req
+        );
+        if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
         const {
           type: eventType,
           data: { id }
-        } = yield this.clerkWebhookService.verify(req);
+        } = event;
         if (eventType === "user.deleted") {
           yield this.userRepository.delete(id);
           res.status(200).json({
@@ -568,10 +576,11 @@ var DeleteUserPostsControler = class {
           message: "Evento n\xE3o tratado."
         });
       } catch (err) {
-        res.status(400).json({
-          message: "Falha na verifica\xE7\xE3o do webhook.",
-          err
-        });
+        if (err instanceof Error) {
+          res.status(400).json({
+            error: err.message
+          });
+        }
       }
     });
   }
@@ -600,7 +609,7 @@ var UserControllersFactory = class {
       userRepository,
       clerkWebhookUpdateUserService
     );
-    const deleteUserPostsController2 = new DeleteUserPostsControler(
+    const deleteUserPostsController2 = new DeleteUserControler(
       userRepository,
       clerkWebhookDeleteUserService
     );
