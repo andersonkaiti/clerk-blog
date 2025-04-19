@@ -25,7 +25,7 @@ export default async function Post({
           <h1
             className="text-5xl font-semibold tracking-tight text-white"
             dangerouslySetInnerHTML={{
-              __html: title.replace(/\n?\r/g, "<br />"),
+              __html: title,
             }}
           />
 
@@ -47,9 +47,9 @@ export default async function Post({
             </div>
           </div>
 
-          <p
+          <div
             dangerouslySetInnerHTML={{
-              __html: text.replace(/\n?\r/g, "<br />"),
+              __html: text,
             }}
           />
         </div>

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { cn } from "@utils/cn";
 import Form from "next/form";
 import { Spinner } from "@components/spinner";
+import { TipTapInput } from "@components/tiptap/tiptap";
 import { updatePost } from "@actions/update-post";
 import { IPost } from "types/user-post";
 
@@ -18,7 +19,7 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center gap-4">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center gap-4 p-10">
       <Form
         action={updatePostAction}
         className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"
@@ -59,13 +60,11 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
           >
             Texto
           </label>
-          <textarea
-            id="text"
+          <TipTapInput
             className={cn(
               "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
               state?.errors.text && "border-red-500",
             )}
-            name="text"
             defaultValue={text}
           />
           {state && (
