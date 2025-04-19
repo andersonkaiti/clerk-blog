@@ -15,7 +15,7 @@ export function NavigationBar() {
   return (
     <header
       ref={navigationBarRef}
-      className="sticky top-0 z-50 flex h-20 w-full items-center justify-between border-b-1 border-gray-700 bg-black px-10 py-4"
+      className="sticky top-0 z-50 flex h-20 w-full items-center justify-between border-b-1 border-gray-700 bg-black/30 px-10 py-4 backdrop-blur-md"
     >
       <MenuButton
         showNavigationBar={showNavigationBar}
