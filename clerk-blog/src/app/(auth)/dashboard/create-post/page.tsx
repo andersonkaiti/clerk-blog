@@ -4,13 +4,14 @@ import { useActionState } from "react";
 import { cn } from "@utils/cn";
 import Form from "next/form";
 import { Spinner } from "@components/spinner";
+import { TipTapInput } from "@components/tiptap/tiptap";
 import { createPost } from "@actions/create-post";
 
 export default function CreatePost() {
   const [state, createPostAction, pending] = useActionState(createPost, null);
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-10">
       <Form
         action={createPostAction}
         className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"
@@ -50,13 +51,11 @@ export default function CreatePost() {
           >
             Texto
           </label>
-          <textarea
-            id="text"
+          <TipTapInput
             className={cn(
               "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
               state?.errors.text && "border-red-500",
             )}
-            name="text"
           />
           {state && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
