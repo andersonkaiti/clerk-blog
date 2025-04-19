@@ -57,6 +57,9 @@ export class PostRepository implements IPostRepository {
         id,
         deleted: false,
       },
+      include: {
+        user: true,
+      },
     });
 
     return transformPost(posts);

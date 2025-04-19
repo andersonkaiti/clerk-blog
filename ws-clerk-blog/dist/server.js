@@ -142,6 +142,9 @@ var PostRepository = class {
         where: {
           id,
           deleted: false
+        },
+        include: {
+          user: true
         }
       });
       return transformPost(posts);

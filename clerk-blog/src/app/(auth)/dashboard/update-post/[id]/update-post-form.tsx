@@ -37,7 +37,7 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
             type="text"
             id="title"
             className={cn(
-              "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
+              "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
               state?.errors.title && "border-red-500",
             )}
             name="title"
@@ -62,7 +62,7 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
           <textarea
             id="text"
             className={cn(
-              "block w-full rounded-lg border border-gray-600 bg-neutral-950 p-2.5 text-sm text-white placeholder-gray-400",
+              "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
               state?.errors.text && "border-red-500",
             )}
             name="text"
@@ -76,7 +76,7 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
         </div>
         <button
           type="submit"
-          className="flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-neutral-950 px-5 py-2.5 text-sm font-medium text-white hover:border-gray-600 hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-700 focus:outline-none"
+          className="flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-600 bg-black px-5 py-2.5 text-sm font-medium text-white hover:border-gray-600 hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-700 focus:outline-none"
         >
           {pending && <Spinner />}
           Atualizar post

@@ -29,7 +29,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="dark">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} bg-neutral-950 antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} bg-black antialiased`}
         >
           <NavigationBar />
           {children}
