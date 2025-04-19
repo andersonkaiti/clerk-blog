@@ -15,7 +15,7 @@ export function NavigationBar() {
   return (
     <header
       ref={navigationBarRef}
-      className="sticky top-0 z-50 flex h-20 w-full items-center justify-between border-b-1 border-gray-700 bg-neutral-950 px-10 py-4"
+      className="sticky top-0 z-50 flex h-20 w-full items-center justify-between border-b-1 border-gray-700 bg-black px-10 py-4"
     >
       <MenuButton
         showNavigationBar={showNavigationBar}
@@ -23,7 +23,7 @@ export function NavigationBar() {
       />
       <nav
         className={cn(
-          "fixed top-0 z-40 flex h-screen flex-col items-center justify-center gap-4 border-r-1 border-gray-700 bg-neutral-950 p-10 transition-all sm:static sm:h-fit sm:w-full sm:flex-row sm:justify-between sm:border-r-0 sm:bg-transparent sm:transition-none",
+          "fixed top-0 z-40 flex h-screen flex-col items-center justify-center gap-4 border-r-1 border-gray-700 bg-black p-10 transition-all sm:static sm:h-fit sm:w-full sm:flex-row sm:justify-between sm:border-r-0 sm:bg-transparent sm:transition-none",
           showNavigationBar ? "left-0" : "-left-100",
         )}
       >
@@ -34,13 +34,13 @@ export function NavigationBar() {
           Clerk Blog
         </Link>
         <SignedOut>
-          <div className="flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-8 sm:w-fit sm:flex-row">
             <NavButton href="/sign-in">Sign In</NavButton>
             <NavButton href="/sign-up">Sign Up</NavButton>
           </div>
         </SignedOut>
         <SignedIn>
-          <div className="flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row">
+          <div className="flex w-full flex-col items-center gap-8 sm:w-fit sm:flex-row">
             <NavButton href="/dashboard">Sistema</NavButton>
             <UserButton
               appearance={{

@@ -7,7 +7,7 @@ export interface IDottedBackgroundProps {
 
 export function DottedBackground({ children }: IDottedBackgroundProps) {
   return (
-    <div className="relative flex w-full items-center justify-center bg-neutral-950">
+    <div className="relative flex w-full items-center justify-center">
       <div
         className={cn(
           "absolute inset-0",

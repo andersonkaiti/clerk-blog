@@ -9,7 +9,7 @@ export default function Loading() {
             <div
               key={index}
               role="status"
-              className="h-42.5 w-full animate-pulse space-y-2 divide-gray-700 overflow-hidden rounded-lg border border-gray-700 p-4 shadow-sm"
+              className="h-42.5 w-full animate-pulse space-y-2 divide-gray-700 overflow-hidden rounded-lg border border-gray-700 bg-black p-4 shadow-sm"
             >
               <div className="mb-3 h-4 w-30 rounded-full bg-gray-600" />
               <div className="mb-2 h-8 w-2/3 rounded-full bg-gray-600" />

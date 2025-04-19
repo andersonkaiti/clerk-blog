@@ -5,7 +5,7 @@ export function TableHead({ children, className }: ITableProps) {
   return (
     <thead
       className={cn(
-        "bg-neutral-900 text-xs text-gray-400 uppercase",
+        "bg-neutral-950 text-xs text-gray-400 uppercase",
         className,
       )}
     >

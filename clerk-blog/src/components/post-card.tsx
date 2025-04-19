@@ -8,7 +8,7 @@ export interface IPostCardProps {
 
 export function PostCard({ post }: IPostCardProps) {
   return (
-    <div className="flex w-full flex-col justify-between space-y-2 rounded-lg border border-gray-700 bg-neutral-950 p-4 shadow-sm">
+    <div className="flex w-full flex-col justify-between space-y-2 rounded-lg border border-gray-700 bg-black p-4 shadow-sm">
       <h6 className="text-xs text-gray-400">{parseTime(post.updatedAt)}</h6>
       <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">
         {post.title}
