@@ -11,9 +11,6 @@ export class PostRepository implements IPostRepository {
     const posts = await this.database.posts.findMany({
       orderBy: [
         {
-          createdAt: "desc",
-        },
-        {
           updatedAt: "desc",
         },
       ],
@@ -39,9 +36,6 @@ export class PostRepository implements IPostRepository {
         deleted: false,
       },
       orderBy: [
-        {
-          createdAt: "desc",
-        },
         {
           updatedAt: "desc",
         },
