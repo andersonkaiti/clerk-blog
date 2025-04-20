@@ -19,7 +19,7 @@ export function UpdateForm({ post: { id, title, text } }: IUpdateFormProps) {
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center gap-4 p-10">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center gap-4 p-4 sm:p-10">
       <Form
         action={updatePostAction}
         className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"

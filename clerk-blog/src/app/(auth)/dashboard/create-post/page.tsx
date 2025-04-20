@@ -11,7 +11,7 @@ export default function CreatePost() {
   const [state, createPostAction, pending] = useActionState(createPost, null);
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-10">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-4 sm:p-10">
       <Form
         action={createPostAction}
         className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"

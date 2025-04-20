@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <DottedBackground>
       <div className="flex min-h-[calc(100vh-5rem)] items-center justify-center">
-        <div className="grid h-full w-full max-w-7xl grid-cols-1 gap-4 p-10 sm:grid-cols-2">
+        <div className="grid h-full w-full max-w-7xl grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:p-10">
           {[...new Array(8)].map((_, index: number) => (
             <div
               key={index}
