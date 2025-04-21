@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { stripHtml } from "@utils/strip-html";
 import { redirect } from "next/navigation";
 import z from "zod";
 
@@ -22,8 +23,11 @@ export interface IErrors {
   errors: { [K in keyof IValidatedPost]?: string[] };
 }
 
-export function validateForm(formData: z.infer<typeof postSchema>) {
-  const { success, error } = postSchema.safeParse(formData);
+export function validateForm({ title, text }: z.infer<typeof postSchema>) {
+  const { success, error } = postSchema.safeParse({
+    title,
+    text: stripHtml(text).replace(/\s/g, ""),
+  });
 
   if (!success) {
     return {
