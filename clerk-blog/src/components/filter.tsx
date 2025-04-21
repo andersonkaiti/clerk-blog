@@ -1,7 +1,12 @@
 import { Search } from "lucide-react";
 import Form from "next/form";
 
-export function Filter({ url, filter }: { url: string; filter: string }) {
+export interface IFilterProps {
+  url: string;
+  filter: string;
+}
+
+export function Filter({ url, filter }: IFilterProps) {
   return (
     <Form action={url}>
       <div className="flex items-center rounded-lg border border-gray-700 bg-black text-[14px] text-white/60 transition-all duration-150 ease-in-out focus-within:ring-2 focus-within:ring-gray-700 focus-within:ring-offset-2 focus-within:ring-offset-[#09090b]">

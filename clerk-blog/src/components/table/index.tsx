@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode } from "react";
+import { ReactNode, ThHTMLAttributes } from "react";
 import { TableBody } from "./table-body";
 import { TableHead } from "./table-head";
 import { TableHeadTitle } from "./table-head-title";
@@ -7,7 +7,7 @@ import { TableRow } from "./table-row";
 import { TableRowData } from "./table-row-data";
 import { TableRowHead } from "./table-row-head";
 
-export interface ITableProps extends HTMLAttributes<HTMLDivElement> {
+export interface ITableProps extends ThHTMLAttributes<HTMLTableCellElement> {
   children: ReactNode;
 }
 
