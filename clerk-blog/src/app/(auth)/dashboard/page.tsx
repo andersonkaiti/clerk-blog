@@ -18,7 +18,7 @@ export default async function Dashboard({ searchParams }: IDashboardProps) {
   const posts: IPost[] = await getUserPosts(filter);
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center justify-center lg:w-fit">
+    <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center">
       <div className="w-full overflow-x-auto p-5 shadow-md sm:rounded-lg">
         <div className="flex w-full items-center justify-between gap-2 py-4">
           <Filter
