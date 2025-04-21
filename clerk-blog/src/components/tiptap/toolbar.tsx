@@ -39,7 +39,7 @@ export function Toolbar({ editor }: IToolbarProps) {
         <Italic size={20} />
       </Toggle>
       <Toggle
-        pressed={editor.isActive("bulletlist")}
+        pressed={editor.isActive("bulletList")}
         onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
         className="cursor-pointer"
       >

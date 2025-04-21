@@ -15,7 +15,7 @@ export default async function Post({
 
   return (
     <DottedBackground>
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col items-center justify-center space-y-8 p-8">
+      <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-5xl space-y-8 p-8">
         <BackButton />
         <div className="w-full space-y-8">
           <h1 className="text-xs font-semibold text-gray-400">

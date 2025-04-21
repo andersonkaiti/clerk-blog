@@ -3,15 +3,23 @@ import { parseTime } from "@utils/parse-time";
 import { CirclePlus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { DeleteDialog } from "@components/delete-dialog";
+import { Filter } from "@components/filter";
 import { Table } from "@components/table";
 import { getUserPosts } from "@actions/get-user-posts";
 import { IPost } from "types/user-post";
 
-export default async function Dashboard() {
-  const posts: IPost[] = await getUserPosts();
+export interface IDashboardProps {
+  searchParams: Promise<{ filter: string }>;
+}
+
+export default async function Dashboard({ searchParams }: IDashboardProps) {
+  const { filter = "" } = await searchParams;
+
+  const posts: IPost[] = await getUserPosts(filter);
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center justify-center lg:w-fit">
+      <Filter url={filter && `/dashboard/?filter=${filter}`} filter={filter} />
       <div className="w-full overflow-x-auto p-5 shadow-md sm:rounded-lg">
         <Table.Root>
           <Table.Head>

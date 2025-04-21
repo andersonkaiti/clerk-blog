@@ -6,9 +6,16 @@ export class GetUserPostsController {
 
   async handle(req: Request, res: Response) {
     try {
-      const { userId } = req.params;
+      const { userId, filter } = req.params;
 
-      const posts = await this.postRepository.getByUserId(userId);
+      let posts = await this.postRepository.getByUserId(userId);
+
+      if (filter)
+        posts = posts.filter(
+          (post) =>
+            post.title.toLowerCase().includes(filter.toLowerCase()) ||
+            post.text.toLowerCase().includes(filter.toLowerCase())
+        );
 
       res.status(200).json(posts);
     } catch (err) {

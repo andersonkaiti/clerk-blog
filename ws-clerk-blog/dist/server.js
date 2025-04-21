@@ -97,9 +97,6 @@ var PostRepository = class {
       const posts = yield this.database.posts.findMany({
         orderBy: [
           {
-            createdAt: "desc"
-          },
-          {
             updatedAt: "desc"
           }
         ],
@@ -125,9 +122,6 @@ var PostRepository = class {
           deleted: false
         },
         orderBy: [
-          {
-            createdAt: "desc"
-          },
           {
             updatedAt: "desc"
           }
@@ -224,8 +218,12 @@ var GetUserPostsController = class {
   handle(req, res) {
     return __async(this, null, function* () {
       try {
-        const { userId } = req.params;
-        const posts = yield this.postRepository.getByUserId(userId);
+        const { userId, filter } = req.params;
+        let posts = yield this.postRepository.getByUserId(userId);
+        if (filter)
+          posts = posts.filter(
+            (post) => post.title.toLowerCase().includes(filter.toLowerCase()) || post.text.toLowerCase().includes(filter.toLowerCase())
+          );
         res.status(200).json(posts);
       } catch (err) {
         if (err instanceof Error) {
@@ -243,10 +241,15 @@ var GetPostsController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(_req, res) {
+  handle(req, res) {
     return __async(this, null, function* () {
       try {
-        const posts = yield this.postRepository.get();
+        const { filter } = req.params;
+        let posts = yield this.postRepository.get();
+        if (filter)
+          posts = posts.filter(
+            (post) => post.title.toLowerCase().includes(filter.toLowerCase()) || post.text.toLowerCase().includes(filter.toLowerCase())
+          );
         res.status(200).json(posts);
       } catch (err) {
         if (err instanceof Error) {
@@ -363,8 +366,13 @@ router2.post("/", createPostController.handle.bind(createPostController));
 router2.put("/", updatePostController.handle.bind(updatePostController));
 router2.delete("/:id", deletePostController.handle.bind(deletePostController));
 router2.get("/", getPostsController.handle.bind(getPostsController));
+router2.get("/:filter", getPostsController.handle.bind(getPostsController));
 router2.get(
   "/by-user-id/:userId",
+  getUserPostsController.handle.bind(getUserPostsController)
+);
+router2.get(
+  "/by-user-id/:userId/:filter",
   getUserPostsController.handle.bind(getUserPostsController)
 );
 router2.get(

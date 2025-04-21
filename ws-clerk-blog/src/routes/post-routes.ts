@@ -20,8 +20,15 @@ router.delete("/:id", deletePostController.handle.bind(deletePostController));
 
 router.get("/", getPostsController.handle.bind(getPostsController));
 
+router.get("/:filter", getPostsController.handle.bind(getPostsController));
+
 router.get(
   "/by-user-id/:userId",
+  getUserPostsController.handle.bind(getUserPostsController)
+);
+
+router.get(
+  "/by-user-id/:userId/:filter",
   getUserPostsController.handle.bind(getUserPostsController)
 );
 

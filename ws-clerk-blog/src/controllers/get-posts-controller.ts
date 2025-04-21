@@ -4,9 +4,18 @@ import type { IPostRepository } from "../repositories/ipost-repository.d.ts";
 export class GetPostsController {
   constructor(private postRepository: IPostRepository) {}
 
-  async handle(_req: Request, res: Response) {
+  async handle(req: Request, res: Response) {
     try {
-      const posts = await this.postRepository.get();
+      const { filter } = req.params;
+
+      let posts = await this.postRepository.get();
+
+      if (filter)
+        posts = posts.filter(
+          (post) =>
+            post.title.toLowerCase().includes(filter.toLowerCase()) ||
+            post.text.toLowerCase().includes(filter.toLowerCase())
+        );
 
       res.status(200).json(posts);
     } catch (err) {

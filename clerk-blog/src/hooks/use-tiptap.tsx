@@ -12,7 +12,10 @@ export function useTipTap({ className, defaultValue = "" }: ITipTapProps) {
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure(),
+      StarterKit.configure({
+        heading: false,
+        listItem: false,
+      }),
       Heading.configure({
         HTMLAttributes: {
           class: "text-xl font-bold",

@@ -8,7 +8,8 @@ export default function Loading() {
         </div>
         <div className="space-y-2">
           <div className="mb-2 h-5 w-10 rounded-lg bg-gray-600" />
-          <div className="h-15.5 w-full rounded-lg bg-gray-600" />
+          <div className="h-11.5 w-full rounded-lg bg-gray-600" />
+          <div className="h-57.5 w-full rounded-lg bg-gray-600" />
         </div>
         <div className="h-10.5 w-full rounded-lg bg-gray-600" />
       </div>

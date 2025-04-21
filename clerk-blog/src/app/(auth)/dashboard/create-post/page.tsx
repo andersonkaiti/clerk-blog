@@ -11,7 +11,7 @@ export default function CreatePost() {
   const [state, createPostAction, pending] = useActionState(createPost, null);
 
   return (
-    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-10">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-4 sm:p-10">
       <Form
         action={createPostAction}
         className="mx-auto w-full space-y-4 px-4 sm:max-w-4xl"
@@ -30,12 +30,12 @@ export default function CreatePost() {
             type="text"
             id="title"
             className={cn(
-              "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
-              state?.errors.title && "border-red-500",
+              "w-full rounded-lg border-2 border-gray-700 bg-black p-2 text-[14px] transition-all duration-150 ease-in-out outline-none focus-within:ring-2 focus-within:ring-gray-700 focus-within:ring-offset-2 focus-within:ring-offset-[#09090b]",
+              state?.errors.title && "border-red-500 focus-within:ring-red-600",
             )}
             name="title"
           />
-          {state && (
+          {state?.errors.title && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
               {state.errors.title}
             </p>
@@ -53,11 +53,11 @@ export default function CreatePost() {
           </label>
           <TipTapInput
             className={cn(
-              "block w-full rounded-lg border border-gray-600 bg-black p-2.5 text-sm text-white placeholder-gray-400",
-              state?.errors.text && "border-red-500",
+              "rounded-lg border-2 border-gray-700 bg-black p-2 text-[14px] transition-all duration-150 ease-in-out outline-none focus-within:ring-2 focus-within:ring-gray-700 focus-within:ring-offset-2 focus-within:ring-offset-[#09090b]",
+              state?.errors.text && "border-red-500 focus-within:ring-red-600",
             )}
           />
-          {state && (
+          {state?.errors.text && (
             <p className="mt-2 text-sm text-red-600 dark:text-red-500">
               {state.errors.text}
             </p>
