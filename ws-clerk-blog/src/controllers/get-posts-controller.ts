@@ -8,14 +8,7 @@ export class GetPostsController {
     try {
       const { filter } = req.params;
 
-      let posts = await this.postRepository.get();
-
-      if (filter)
-        posts = posts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(filter.toLowerCase()) ||
-            post.text.toLowerCase().includes(filter.toLowerCase())
-        );
+      let posts = await this.postRepository.get(filter || "");
 
       res.status(200).json(posts);
     } catch (err) {

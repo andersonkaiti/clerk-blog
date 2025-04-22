@@ -8,23 +8,22 @@ datasource db {
 }
 
 model Posts {
-  title     Bytes
-  text      Bytes
   userId    String
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
+  title     String?  @db.LongText
+  text      String?  @db.LongText
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user Users @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  @@index([userId], map: "posts_userId_fkey")
   @@map("posts")
 }
 
 model Users {
   id                String         @id
   created_at        DateTime
-  email_addresses   EmailAddress[] @relation("user_emails")
   first_name        String?
   image_url         String?
   last_name         String?
@@ -32,6 +31,7 @@ model Users {
   profile_image_url String?
   updated_at        DateTime
   username          String?
+  email_addresses   EmailAddress[] @relation("user_emails")
   Posts             Posts[]
 
   @@map("users")
@@ -44,5 +44,6 @@ model EmailAddress {
   userId        String
   user          Users  @relation("user_emails", fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId], map: "email_address_userId_fkey")
   @@map("email_address")
 }

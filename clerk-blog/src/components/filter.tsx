@@ -16,7 +16,9 @@ export function Filter({ url, filter }: IFilterProps) {
           name="filter"
           defaultValue={filter}
         />
-        <Search className="mr-2" />
+        <button type="submit" className="cursor-pointer">
+          <Search className="mr-2 h-4 w-4" />
+        </button>
       </div>
     </Form>
   );
