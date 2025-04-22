@@ -66,42 +66,33 @@ router.get("/", (_req, res) => {
 // src/routes/post-routes.ts
 import { Router as Router2 } from "express";
 
-// src/utils/decode-buffer.ts
-var decode = (input) => Buffer.isBuffer(input) ? input.toString("utf-8") : input instanceof Uint8Array ? Buffer.from(input).toString("utf-8") : String(input);
-
-// src/utils/transform-post.ts
-function transformPost(data) {
-  if (Array.isArray(data)) {
-    return data.map((_a) => {
-      var _b = _a, { title: title2, text: text2 } = _b, rest2 = __objRest(_b, ["title", "text"]);
-      return __spreadValues({
-        title: decode(title2),
-        text: decode(text2)
-      }, rest2);
-    });
-  }
-  const _c = data, { title, text } = _c, rest = __objRest(_c, ["title", "text"]);
-  return __spreadValues({
-    title: decode(title),
-    text: decode(text)
-  }, rest);
-}
-
 // src/repositories/post-repository.ts
 var PostRepository = class {
   constructor(database2) {
     this.database = database2;
   }
-  get() {
+  get(filter) {
     return __async(this, null, function* () {
-      const posts = yield this.database.posts.findMany({
+      return yield this.database.posts.findMany({
         orderBy: [
           {
             updatedAt: "desc"
           }
         ],
         where: {
-          deleted: false
+          deleted: false,
+          OR: [
+            {
+              title: {
+                contains: filter
+              }
+            },
+            {
+              text: {
+                contains: filter
+              }
+            }
+          ]
         },
         include: {
           user: {
@@ -111,15 +102,26 @@ var PostRepository = class {
           }
         }
       });
-      return transformPost(posts);
     });
   }
-  getByUserId(userId) {
+  getByUserId(userId, filter) {
     return __async(this, null, function* () {
-      const posts = yield this.database.posts.findMany({
+      return yield this.database.posts.findMany({
         where: {
           userId,
-          deleted: false
+          deleted: false,
+          OR: [
+            {
+              title: {
+                contains: filter
+              }
+            },
+            {
+              text: {
+                contains: filter
+              }
+            }
+          ]
         },
         orderBy: [
           {
@@ -127,12 +129,11 @@ var PostRepository = class {
           }
         ]
       });
-      return transformPost(posts);
     });
   }
   getById(id) {
     return __async(this, null, function* () {
-      const posts = yield this.database.posts.findMany({
+      return yield this.database.posts.findMany({
         where: {
           id,
           deleted: false
@@ -141,34 +142,25 @@ var PostRepository = class {
           user: true
         }
       });
-      return transformPost(posts);
     });
   }
-  create(_0) {
-    return __async(this, arguments, function* ({ userId, text, title }) {
-      const post = yield this.database.posts.create({
-        data: {
-          userId,
-          title: Buffer.from(title, "utf-8"),
-          text: Buffer.from(text, "utf-8")
-        }
+  create(data) {
+    return __async(this, null, function* () {
+      return yield this.database.posts.create({
+        data
       });
-      return transformPost(post);
     });
   }
-  update(_0) {
-    return __async(this, arguments, function* ({ id, title, text }) {
-      const post = yield this.database.posts.update({
-        data: {
-          title: Buffer.from(title, "utf-8"),
-          text: Buffer.from(text, "utf-8")
-        },
+  update(_a) {
+    return __async(this, null, function* () {
+      var _b = _a, { id } = _b, data = __objRest(_b, ["id"]);
+      return yield this.database.posts.update({
+        data,
         where: {
           id,
           deleted: false
         }
       });
-      return transformPost(post);
     });
   }
   delete(id) {
@@ -219,11 +211,7 @@ var GetUserPostsController = class {
     return __async(this, null, function* () {
       try {
         const { userId, filter } = req.params;
-        let posts = yield this.postRepository.getByUserId(userId);
-        if (filter)
-          posts = posts.filter(
-            (post) => post.title.toLowerCase().includes(filter.toLowerCase()) || post.text.toLowerCase().includes(filter.toLowerCase())
-          );
+        let posts = yield this.postRepository.getByUserId(userId, filter || "");
         res.status(200).json(posts);
       } catch (err) {
         if (err instanceof Error) {
@@ -245,11 +233,7 @@ var GetPostsController = class {
     return __async(this, null, function* () {
       try {
         const { filter } = req.params;
-        let posts = yield this.postRepository.get();
-        if (filter)
-          posts = posts.filter(
-            (post) => post.title.toLowerCase().includes(filter.toLowerCase()) || post.text.toLowerCase().includes(filter.toLowerCase())
-          );
+        let posts = yield this.postRepository.get(filter || "");
         res.status(200).json(posts);
       } catch (err) {
         if (err instanceof Error) {

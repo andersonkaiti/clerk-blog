@@ -1,14 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import type { IPostRepository } from "./ipost-repository.d.ts";
 import type { IPost } from "../models/post.d.ts";
-import type { ITransformedPosts } from "../models/itransformed-post.d.ts";
-import { transformPost } from "../utils/transform-post.ts";
+import type { Posts } from "@prisma/client";
 
 export class PostRepository implements IPostRepository {
   constructor(private database: PrismaClient) {}
 
-  async get(): Promise<ITransformedPosts[]> {
-    const posts = await this.database.posts.findMany({
+  async get(filter: string): Promise<Posts[]> {
+    return await this.database.posts.findMany({
       orderBy: [
         {
           updatedAt: "desc",
@@ -16,6 +15,18 @@ export class PostRepository implements IPostRepository {
       ],
       where: {
         deleted: false,
+        OR: [
+          {
+            title: {
+              contains: filter,
+            },
+          },
+          {
+            text: {
+              contains: filter,
+            },
+          },
+        ],
       },
       include: {
         user: {
@@ -25,15 +36,25 @@ export class PostRepository implements IPostRepository {
         },
       },
     });
-
-    return transformPost(posts);
   }
 
-  async getByUserId(userId: string): Promise<ITransformedPosts[]> {
-    const posts = await this.database.posts.findMany({
+  async getByUserId(userId: string, filter: string): Promise<Posts[]> {
+    return await this.database.posts.findMany({
       where: {
         userId,
         deleted: false,
+        OR: [
+          {
+            title: {
+              contains: filter,
+            },
+          },
+          {
+            text: {
+              contains: filter,
+            },
+          },
+        ],
       },
       orderBy: [
         {
@@ -41,12 +62,10 @@ export class PostRepository implements IPostRepository {
         },
       ],
     });
-
-    return transformPost(posts);
   }
 
-  async getById(id: string): Promise<ITransformedPosts[] | null> {
-    const posts = await this.database.posts.findMany({
+  async getById(id: string): Promise<Posts[] | null> {
+    return await this.database.posts.findMany({
       where: {
         id,
         deleted: false,
@@ -55,35 +74,22 @@ export class PostRepository implements IPostRepository {
         user: true,
       },
     });
-
-    return transformPost(posts);
   }
 
-  async create({ userId, text, title }: IPost): Promise<ITransformedPosts> {
-    const post = await this.database.posts.create({
-      data: {
-        userId,
-        title: Buffer.from(title, "utf-8"),
-        text: Buffer.from(text, "utf-8"),
-      },
+  async create(data: IPost): Promise<Posts> {
+    return await this.database.posts.create({
+      data,
     });
-
-    return transformPost(post);
   }
 
-  async update({ id, title, text }: IPost): Promise<ITransformedPosts> {
-    const post = await this.database.posts.update({
-      data: {
-        title: Buffer.from(title, "utf-8"),
-        text: Buffer.from(text, "utf-8"),
-      },
+  async update({ id, ...data }: IPost): Promise<Posts> {
+    return await this.database.posts.update({
+      data,
       where: {
         id,
         deleted: false,
       },
     });
-
-    return transformPost(post);
   }
 
   async delete(id: string): Promise<void> {
