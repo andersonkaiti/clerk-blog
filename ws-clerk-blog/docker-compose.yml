@@ -1,9 +1,9 @@
 services:
   database:
     image: mysql:latest
-    container_name: post-auth-database
+    container_name: clerk_blog_database
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MSQL_DATABASE=post_auth
+      - MSQL_DATABASE=clerk_blog
     ports:
       - 3306:3306
