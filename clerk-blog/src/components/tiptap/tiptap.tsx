@@ -2,7 +2,7 @@
 
 import { HTMLAttributes } from "react";
 import { EditorContent } from "@tiptap/react";
-import { useTipTap } from "@hooks/use-tiptap";
+import { useTipTap } from "@hooks/use-tiptap.hook";
 import { Toolbar } from "./toolbar";
 
 export type ITipTapProps = HTMLAttributes<HTMLDivElement>;
