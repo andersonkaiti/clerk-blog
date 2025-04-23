@@ -1,21 +1,14 @@
-import { Fragment } from "react";
-import { parseTime } from "@utils/parse-time";
-import { CirclePlus, Pencil } from "lucide-react";
+"use client";
+
+import { Suspense, useState } from "react";
+import { CirclePlus } from "lucide-react";
 import Link from "next/link";
-import { DeleteDialog } from "@components/delete-dialog";
+import { DashboardTable } from "@components/dashboard-table/dashboard-table";
+import DashboardTableSkeleton from "@components/dashboard-table/dashboard-table-skeleton";
 import { Filter } from "@components/filter";
-import { Table } from "@components/table";
-import { getUserPosts } from "@actions/get-user-posts";
-import { IPost } from "types/user-post";
 
-export interface IDashboardProps {
-  searchParams: Promise<{ filter: string }>;
-}
-
-export default async function Dashboard({ searchParams }: IDashboardProps) {
-  const { filter = "" } = await searchParams;
-
-  const posts: IPost[] = await getUserPosts(filter);
+export default function Dashboard() {
+  const [filter, setFilter] = useState("");
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center">
@@ -24,6 +17,7 @@ export default async function Dashboard({ searchParams }: IDashboardProps) {
           <Filter
             url={filter && `/dashboard/?filter=${filter}`}
             filter={filter}
+            setFilter={setFilter}
           />
           <Link
             href="/dashboard/create-post"
@@ -33,46 +27,9 @@ export default async function Dashboard({ searchParams }: IDashboardProps) {
             Cadastrar
           </Link>
         </div>
-        <Table.Root>
-          <Table.Head>
-            <Table.Title>Título</Table.Title>
-            <Table.Title>Publicado</Table.Title>
-            <Table.Title>Atualizado</Table.Title>
-            <Table.Title colSpan={2}>Ações</Table.Title>
-          </Table.Head>
-          <Table.Body>
-            {posts?.map((post: IPost, index: number) => (
-              <Fragment key={index}>
-                <Table.Row>
-                  <Table.RowHead>{post.title}</Table.RowHead>
-                  <Table.RowHead>{parseTime(post.createdAt)}</Table.RowHead>
-                  <Table.RowHead>{parseTime(post.updatedAt)}</Table.RowHead>
-                  <Table.RowHead className="flex gap-10">
-                    <Link
-                      href={`/dashboard/update-post/${post.id}`}
-                      className="flex items-center gap-2 font-medium text-blue-500 hover:underline"
-                      prefetch={true}
-                    >
-                      <Pencil color="oklch(62.3% 0.214 259.815)" size={14} />
-                      Editar
-                    </Link>
-                  </Table.RowHead>
-                  <Table.RowHead>
-                    <DeleteDialog post={post} />
-                  </Table.RowHead>
-                </Table.Row>
-              </Fragment>
-            ))}
-
-            {posts.length === 0 && (
-              <Table.Row>
-                <Table.RowHead colSpan={4} className="text-center">
-                  Você ainda não tem nenhum post.
-                </Table.RowHead>
-              </Table.Row>
-            )}
-          </Table.Body>
-        </Table.Root>
+        <Suspense fallback={<DashboardTableSkeleton />}>
+          <DashboardTable filter={filter} />
+        </Suspense>
       </div>
     </div>
   );

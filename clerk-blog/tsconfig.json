@@ -23,6 +23,7 @@
       "@contexts/*": ["./src/contexts/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@actions/*": ["./src/actions/*"],
+      "@services/*": ["./src/services/*"],
       "@validators/*": ["./src/validators/*"],
       "@adapters/*": ["./src/adapters/*"],
       "@config/*": ["./src/config/*"],
