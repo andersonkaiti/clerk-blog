@@ -7,7 +7,7 @@ export function BackButton() {
 
   return (
     <button
-      className="group flex cursor-pointer items-center gap-2 self-start text-gray-400 transition-colors hover:text-white"
+      className="group flex cursor-pointer items-center gap-2 self-start text-gray-400 transition-colors hover:text-indigo-500"
       onClick={() => router.back()}
     >
       <svg

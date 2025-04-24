@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
-import { parseTime } from "@utils/parse-time";
+import { formatTime } from "@utils/format-time";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { DeleteDialog } from "@components/delete-dialog";
@@ -29,8 +29,8 @@ export default function DashboardTable({ filter }: IDashboardTableProps) {
           <Fragment key={index}>
             <Table.Row>
               <Table.RowHead>{post.title}</Table.RowHead>
-              <Table.RowHead>{parseTime(post.createdAt)}</Table.RowHead>
-              <Table.RowHead>{parseTime(post.updatedAt)}</Table.RowHead>
+              <Table.RowHead>{formatTime(post.createdAt)}</Table.RowHead>
+              <Table.RowHead>{formatTime(post.updatedAt)}</Table.RowHead>
               <Table.RowHead className="flex gap-10">
                 <Link
                   href={`/dashboard/update-post/${post.id}`}

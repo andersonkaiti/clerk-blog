@@ -1,4 +1,4 @@
-export function parseTime(time: Date) {
+export function formatTime(time: Date) {
   const date = new Date(time);
 
   const day = String(date.getDate()).padStart(2, "0");
@@ -8,5 +8,5 @@ export function parseTime(time: Date) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  return `${day}/${month}/${year} às ${hours}:${minutes}`;
 }
