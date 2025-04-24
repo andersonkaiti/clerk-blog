@@ -1,4 +1,5 @@
-import { parseTime } from "@utils/parse-time";
+import { formatTime } from "@utils/format-time";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 import { BackButton } from "@components/back-button";
 import { DottedBackground } from "@components/dotted-background";
@@ -18,8 +19,9 @@ export default async function Post({
       <div className="mx-auto min-h-[calc(100vh-5rem)] max-w-5xl space-y-8 p-8">
         <BackButton />
         <div className="w-full space-y-8">
-          <h1 className="text-xs font-semibold text-gray-400">
-            Última atualização: {parseTime(updatedAt)}
+          <h1 className="flex items-center gap-1 text-xs font-semibold text-indigo-500">
+            <Clock className="h-4" /> Última atualização:{" "}
+            {formatTime(updatedAt)}
           </h1>
 
           <h1
@@ -30,7 +32,7 @@ export default async function Post({
           />
 
           <div className="space-y-2 border-b border-b-neutral-700 pb-8">
-            <h1 className="text-xs text-gray-400">Publicado por</h1>
+            <h1 className="text-xs font-bold text-white">Publicado por</h1>
             <div className="flex items-center gap-1">
               <div className="relative h-6 w-6 overflow-hidden rounded-full">
                 <Image

@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
-import { parseTime } from "@utils/parse-time";
+import { formatTime } from "@utils/format-time";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { DeleteDialog } from "@components/delete-dialog";
@@ -13,8 +13,8 @@ export interface IDashboardTableProps {
   filter: string;
 }
 
-export function DashboardTable({ filter }: IDashboardTableProps) {
-  const { data: posts } = useGetUserPosts(filter);
+export default function DashboardTable({ filter }: IDashboardTableProps) {
+  const { optimisticPosts, handleDeletePost } = useGetUserPosts(filter);
 
   return (
     <Table.Root>
@@ -25,12 +25,12 @@ export function DashboardTable({ filter }: IDashboardTableProps) {
         <Table.Title colSpan={2}>Ações</Table.Title>
       </Table.Head>
       <Table.Body>
-        {posts?.map((post: IPost, index: number) => (
+        {optimisticPosts?.map((post: IPost, index: number) => (
           <Fragment key={index}>
             <Table.Row>
               <Table.RowHead>{post.title}</Table.RowHead>
-              <Table.RowHead>{parseTime(post.createdAt)}</Table.RowHead>
-              <Table.RowHead>{parseTime(post.updatedAt)}</Table.RowHead>
+              <Table.RowHead>{formatTime(post.createdAt)}</Table.RowHead>
+              <Table.RowHead>{formatTime(post.updatedAt)}</Table.RowHead>
               <Table.RowHead className="flex gap-10">
                 <Link
                   href={`/dashboard/update-post/${post.id}`}
@@ -41,13 +41,13 @@ export function DashboardTable({ filter }: IDashboardTableProps) {
                 </Link>
               </Table.RowHead>
               <Table.RowHead>
-                <DeleteDialog post={post} />
+                <DeleteDialog post={post} handleDeletePost={handleDeletePost} />
               </Table.RowHead>
             </Table.Row>
           </Fragment>
         ))}
 
-        {posts?.length === 0 && (
+        {optimisticPosts?.length === 0 && (
           <Table.Row>
             <Table.RowHead colSpan={4} className="text-center">
               Você ainda não tem nenhum post.

@@ -23,7 +23,7 @@ export function NavigationBar() {
       />
       <nav
         className={cn(
-          "fixed top-0 z-40 flex h-screen flex-col items-center justify-center gap-4 border-r-1 border-gray-700 bg-black p-10 transition-all sm:static sm:h-fit sm:w-full sm:flex-row sm:justify-between sm:border-r-0 sm:bg-transparent sm:transition-none",
+          "fixed top-0 z-40 flex h-screen flex-col items-center justify-center gap-4 border-r-1 border-gray-700 bg-black p-14 transition-all sm:static sm:h-fit sm:w-full sm:flex-row sm:justify-between sm:border-r-0 sm:bg-transparent sm:transition-none",
           showNavigationBar ? "left-0" : "-left-100",
         )}
       >
@@ -34,9 +34,9 @@ export function NavigationBar() {
           Clerk Blog
         </Link>
         <SignedOut>
-          <div className="flex w-full flex-col items-center gap-8 sm:w-fit sm:flex-row">
-            <NavButton href="/sign-in">Sign In</NavButton>
-            <NavButton href="/sign-up">Sign Up</NavButton>
+          <div className="flex w-full flex-col items-center gap-4 sm:w-fit sm:flex-row sm:gap-8">
+            <NavButton href="/sign-in">Entrar</NavButton>
+            <NavButton href="/sign-up">Criar uma conta</NavButton>
           </div>
         </SignedOut>
         <SignedIn>

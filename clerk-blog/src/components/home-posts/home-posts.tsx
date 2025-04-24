@@ -6,14 +6,19 @@ export interface IHomePostsProps {
   filter: string;
 }
 
-export function HomePosts({ filter }: IHomePostsProps) {
+export default function HomePosts({ filter }: IHomePostsProps) {
   const { data: posts } = useGetAllPosts(filter);
 
   return (
-    <div className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2">
-      {posts?.map((post: IPost, index: number) => (
-        <PostCard post={post} key={index} />
-      ))}
-    </div>
+    <>
+      <div className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2">
+        {posts?.map((post: IPost, index: number) => (
+          <PostCard post={post} key={index} />
+        ))}
+      </div>
+      {posts.length === 0 && (
+        <p className="text-center">Ainda não há nenhum post.</p>
+      )}
+    </>
   );
 }

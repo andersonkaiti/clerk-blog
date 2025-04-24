@@ -2,10 +2,14 @@
 
 import { Suspense, useState } from "react";
 import { CirclePlus } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { DashboardTable } from "@components/dashboard-table/dashboard-table";
 import DashboardTableSkeleton from "@components/dashboard-table/dashboard-table-skeleton";
 import { Filter } from "@components/filter";
+
+const DynamicDashboardTable = dynamic(
+  () => import("@components/dashboard-table/dashboard-table"),
+);
 
 export default function Dashboard() {
   const [filter, setFilter] = useState("");
@@ -28,7 +32,7 @@ export default function Dashboard() {
           </Link>
         </div>
         <Suspense fallback={<DashboardTableSkeleton />}>
-          <DashboardTable filter={filter} />
+          <DynamicDashboardTable filter={filter} />
         </Suspense>
       </div>
     </div>
