@@ -6,7 +6,7 @@ export class CreatePostController {
 
   async handle(req: Request, res: Response) {
     try {
-      const post = this.postRepository.create(req.body);
+      const post = await this.postRepository.create(req.body);
 
       res.status(201).json(post);
     } catch (err) {

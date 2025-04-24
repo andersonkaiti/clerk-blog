@@ -6,7 +6,7 @@ export class UpdatePostController {
 
   async handle(req: Request, res: Response) {
     try {
-      const post = this.postRepository.update(req.body);
+      const post = await this.postRepository.update(req.body);
 
       res.status(200).json(post);
     } catch (err) {

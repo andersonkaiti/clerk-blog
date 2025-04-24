@@ -8,10 +8,11 @@ export class DeletePostController {
     try {
       const { id } = req.params;
 
-      await this.postRepository.delete(id);
+      const post = await this.postRepository.delete(id);
 
       res.status(200).json({
         message: "Post deletado.",
+        post,
       });
     } catch (err) {
       if (err instanceof Error) {
