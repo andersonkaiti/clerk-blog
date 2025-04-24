@@ -4,9 +4,10 @@ import Form from "next/form";
 export interface IFilterProps {
   url: string;
   filter: string;
+  setFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function Filter({ url, filter }: IFilterProps) {
+export function Filter({ url, filter, setFilter }: IFilterProps) {
   return (
     <Form action={url}>
       <div className="flex items-center rounded-lg border border-gray-700 bg-black text-[14px] text-white/60 transition-all duration-150 ease-in-out focus-within:ring-2 focus-within:ring-gray-700 focus-within:ring-offset-2 focus-within:ring-offset-[#09090b]">
@@ -15,10 +16,9 @@ export function Filter({ url, filter }: IFilterProps) {
           placeholder="Buscar"
           name="filter"
           defaultValue={filter}
+          onChange={(event) => setFilter(event.target.value)}
         />
-        <button type="submit" className="cursor-pointer">
-          <Search className="mr-2 h-4 w-4" />
-        </button>
+        <Search className="mr-2 h-4 w-4" />
       </div>
     </Form>
   );

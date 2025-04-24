@@ -2,7 +2,7 @@
 
 export default function Error({ error }: { error: Error }) {
   return (
-    <h1 className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center">
+    <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center p-5">
       <div
         role="alert"
         className="flex transform items-center rounded-lg border-l-4 border-red-700 bg-red-900 p-4 text-red-100 transition duration-300 ease-in-out hover:scale-105 hover:bg-red-800"
@@ -23,6 +23,6 @@ export default function Error({ error }: { error: Error }) {
         </svg>
         <p className="text-xl font-semibold">{error.message}</p>
       </div>
-    </h1>
+    </div>
   );
 }

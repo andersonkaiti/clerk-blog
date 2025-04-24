@@ -2,9 +2,9 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { api } from "@adapters/index";
+import { State } from "types/form-state";
 import { IValidatedPost, postSchema, validateForm } from "@validators/post";
 import { BASE_URL } from "@config/index";
 
@@ -25,5 +25,8 @@ export async function createPost(_: unknown, formData: FormData) {
   });
 
   revalidatePath("/dashboard");
-  redirect("/dashboard");
+
+  return {
+    success: true,
+  } satisfies State;
 }

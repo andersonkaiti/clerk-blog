@@ -1,52 +1,3 @@
-var __defProp = Object.defineProperty;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __objRest = (source, exclude) => {
-  var target = {};
-  for (var prop in source)
-    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-      target[prop] = source[prop];
-  if (source != null && __getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(source)) {
-      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-        target[prop] = source[prop];
-    }
-  return target;
-};
-var __async = (__this, __arguments, generator) => {
-  return new Promise((resolve, reject) => {
-    var fulfilled = (value) => {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var rejected = (value) => {
-      try {
-        step(generator.throw(value));
-      } catch (e) {
-        reject(e);
-      }
-    };
-    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-    step((generator = generator.apply(__this, __arguments)).next());
-  });
-};
-
 // bin/server.ts
 import http from "node:http";
 
@@ -71,108 +22,95 @@ var PostRepository = class {
   constructor(database2) {
     this.database = database2;
   }
-  get(filter) {
-    return __async(this, null, function* () {
-      return yield this.database.posts.findMany({
-        orderBy: [
-          {
-            updatedAt: "desc"
-          }
-        ],
-        where: {
-          deleted: false,
-          OR: [
-            {
-              title: {
-                contains: filter
-              }
-            },
-            {
-              text: {
-                contains: filter
-              }
-            }
-          ]
-        },
-        include: {
-          user: {
-            include: {
-              email_addresses: true
-            }
-          }
+  async get(filter) {
+    return await this.database.posts.findMany({
+      orderBy: [
+        {
+          updatedAt: "desc"
         }
-      });
-    });
-  }
-  getByUserId(userId, filter) {
-    return __async(this, null, function* () {
-      return yield this.database.posts.findMany({
-        where: {
-          userId,
-          deleted: false,
-          OR: [
-            {
-              title: {
-                contains: filter
-              }
-            },
-            {
-              text: {
-                contains: filter
-              }
-            }
-          ]
-        },
-        orderBy: [
+      ],
+      where: {
+        deleted: false,
+        OR: [
           {
-            updatedAt: "desc"
+            title: {
+              contains: filter
+            }
+          },
+          {
+            text: {
+              contains: filter
+            }
           }
         ]
-      });
-    });
-  }
-  getById(id) {
-    return __async(this, null, function* () {
-      return yield this.database.posts.findMany({
-        where: {
-          id,
-          deleted: false
-        },
-        include: {
-          user: true
+      },
+      include: {
+        user: {
+          include: {
+            email_addresses: true
+          }
         }
-      });
+      }
     });
   }
-  create(data) {
-    return __async(this, null, function* () {
-      return yield this.database.posts.create({
-        data
-      });
-    });
-  }
-  update(_a) {
-    return __async(this, null, function* () {
-      var _b = _a, { id } = _b, data = __objRest(_b, ["id"]);
-      return yield this.database.posts.update({
-        data,
-        where: {
-          id,
-          deleted: false
+  async getByUserId(userId, filter) {
+    return await this.database.posts.findMany({
+      where: {
+        userId,
+        deleted: false,
+        OR: [
+          {
+            title: {
+              contains: filter
+            }
+          },
+          {
+            text: {
+              contains: filter
+            }
+          }
+        ]
+      },
+      orderBy: [
+        {
+          updatedAt: "desc"
         }
-      });
+      ]
     });
   }
-  delete(id) {
-    return __async(this, null, function* () {
-      yield this.database.posts.update({
-        data: {
-          deleted: true
-        },
-        where: {
-          id
-        }
-      });
+  async getById(id) {
+    return await this.database.posts.findMany({
+      where: {
+        id,
+        deleted: false
+      },
+      include: {
+        user: true
+      }
+    });
+  }
+  async create(data) {
+    return await this.database.posts.create({
+      data
+    });
+  }
+  async update({ id, ...data }) {
+    return await this.database.posts.update({
+      data,
+      where: {
+        id,
+        deleted: false
+      }
+    });
+  }
+  async delete(id) {
+    await this.database.posts.update({
+      data: {
+        deleted: true
+      },
+      where: {
+        id
+      }
     });
   }
 };
@@ -186,19 +124,17 @@ var CreatePostController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const post = this.postRepository.create(req.body);
-        res.status(201).json(post);
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const post = await this.postRepository.create(req.body);
+      res.status(201).json(post);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
       }
-    });
+    }
   }
 };
 
@@ -207,20 +143,18 @@ var GetUserPostsController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const { userId, filter } = req.params;
-        let posts = yield this.postRepository.getByUserId(userId, filter || "");
-        res.status(200).json(posts);
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const { userId, filter } = req.params;
+      let posts = await this.postRepository.getByUserId(userId, filter || "");
+      res.status(200).json(posts);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
       }
-    });
+    }
   }
 };
 
@@ -229,20 +163,18 @@ var GetPostsController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const { filter } = req.params;
-        let posts = yield this.postRepository.get(filter || "");
-        res.status(200).json(posts);
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const { filter } = req.params;
+      let posts = await this.postRepository.get(filter || "");
+      res.status(200).json(posts);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
       }
-    });
+    }
   }
 };
 
@@ -251,20 +183,18 @@ var GetPostByIdController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const { id } = req.params;
-        const post = yield this.postRepository.getById(id);
-        res.status(200).json(post);
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const { id } = req.params;
+      const post = await this.postRepository.getById(id);
+      res.status(200).json(post);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
       }
-    });
+    }
   }
 };
 
@@ -273,19 +203,17 @@ var UpdatePostController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const post = this.postRepository.update(req.body);
-        res.status(200).json(post);
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const post = await this.postRepository.update(req.body);
+      res.status(200).json(post);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
       }
-    });
+    }
   }
 };
 
@@ -294,22 +222,21 @@ var DeletePostController = class {
   constructor(postRepository) {
     this.postRepository = postRepository;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const { id } = req.params;
-        yield this.postRepository.delete(id);
-        res.status(200).json({
-          message: "Post deletado."
+  async handle(req, res) {
+    try {
+      const { id } = req.params;
+      const post = await this.postRepository.delete(id);
+      res.status(200).json({
+        message: "Post deletado.",
+        post
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
         });
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
       }
-    });
+    }
   }
 };
 
@@ -372,87 +299,81 @@ var UserRepository = class {
   constructor(database2) {
     this.database = database2;
   }
-  create(_0) {
-    return __async(this, arguments, function* ({
-      email_addresses,
-      created_at,
-      first_name,
-      image_url,
-      last_name,
-      last_sign_in_at,
-      profile_image_url,
-      updated_at,
-      id
-    }) {
-      yield this.database.users.create({
-        data: {
-          created_at,
-          first_name,
-          image_url,
-          last_name,
-          last_sign_in_at,
-          profile_image_url,
-          updated_at,
-          id,
-          email_addresses: {
-            create: email_addresses.map((email) => ({
-              id: email.id,
-              email_address: email.email_address,
-              object: email.object
-            }))
-          }
+  async create({
+    email_addresses,
+    created_at,
+    first_name,
+    image_url,
+    last_name,
+    last_sign_in_at,
+    profile_image_url,
+    updated_at,
+    id
+  }) {
+    await this.database.users.create({
+      data: {
+        created_at,
+        first_name,
+        image_url,
+        last_name,
+        last_sign_in_at,
+        profile_image_url,
+        updated_at,
+        id,
+        email_addresses: {
+          create: email_addresses.map((email) => ({
+            id: email.id,
+            email_address: email.email_address,
+            object: email.object
+          }))
         }
-      });
+      }
     });
   }
-  update(_0) {
-    return __async(this, arguments, function* ({
-      email_addresses,
-      created_at,
-      first_name,
-      image_url,
-      last_name,
-      last_sign_in_at,
-      profile_image_url,
-      updated_at,
-      username,
-      id
-    }) {
-      yield this.database.users.update({
-        where: {
-          id
-        },
-        data: {
-          created_at,
-          first_name,
-          image_url,
-          last_name,
-          last_sign_in_at,
-          profile_image_url,
-          updated_at,
-          username,
-          email_addresses: {
-            deleteMany: {},
-            create: email_addresses.map((email) => ({
-              id: email.id,
-              email_address: email.email_address,
-              object: email.object
-            }))
-          }
+  async update({
+    email_addresses,
+    created_at,
+    first_name,
+    image_url,
+    last_name,
+    last_sign_in_at,
+    profile_image_url,
+    updated_at,
+    username,
+    id
+  }) {
+    await this.database.users.update({
+      where: {
+        id
+      },
+      data: {
+        created_at,
+        first_name,
+        image_url,
+        last_name,
+        last_sign_in_at,
+        profile_image_url,
+        updated_at,
+        username,
+        email_addresses: {
+          deleteMany: {},
+          create: email_addresses.map((email) => ({
+            id: email.id,
+            email_address: email.email_address,
+            object: email.object
+          }))
         }
-      });
+      }
     });
   }
-  delete(id) {
-    return __async(this, null, function* () {
-      yield this.database.users.delete({
-        include: {
-          email_addresses: true
-        },
-        where: {
-          id
-        }
-      });
+  async delete(id) {
+    await this.database.users.delete({
+      include: {
+        email_addresses: true
+      },
+      where: {
+        id
+      }
     });
   }
 };
@@ -462,30 +383,28 @@ var ClerkWeebhookService = class {
   constructor(webhook) {
     this.webhook = webhook;
   }
-  verify(req) {
-    return __async(this, null, function* () {
-      const {
-        "svix-id": svix_id,
-        "svix-timestamp": svix_timestamp,
-        "svix-signature": svix_signature
-      } = req.headers;
-      if (!svix_id || !svix_timestamp || !svix_signature) {
-        throw new Error("Headers svix ausentes.");
+  async verify(req) {
+    const {
+      "svix-id": svix_id,
+      "svix-timestamp": svix_timestamp,
+      "svix-signature": svix_signature
+    } = req.headers;
+    if (!svix_id || !svix_timestamp || !svix_signature) {
+      throw new Error("Headers svix ausentes.");
+    }
+    const payload = JSON.stringify(req.body);
+    const headers = {
+      "svix-id": svix_id,
+      "svix-timestamp": svix_timestamp,
+      "svix-signature": svix_signature
+    };
+    try {
+      return this.webhook.verify(payload, headers);
+    } catch (err) {
+      if (err instanceof Error) {
+        throw new Error(err.message);
       }
-      const payload = JSON.stringify(req.body);
-      const headers = {
-        "svix-id": svix_id,
-        "svix-timestamp": svix_timestamp,
-        "svix-signature": svix_signature
-      };
-      try {
-        return this.webhook.verify(payload, headers);
-      } catch (err) {
-        if (err instanceof Error) {
-          throw new Error(err.message);
-        }
-      }
-    });
+    }
   }
 };
 
@@ -505,35 +424,34 @@ var CreateUserController = class {
     this.userRepository = userRepository;
     this.clerkWebhookService = clerkWebhookService;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const event = yield this.clerkWebhookService.verify(
-          req
-        );
-        if (!event) throw new Error("Erro ao verificar webhook.");
-        const {
-          type: eventType,
-          data: _a
-        } = event, _b = _a, { created_at, updated_at, last_sign_in_at } = _b, userData = __objRest(_b, ["created_at", "updated_at", "last_sign_in_at"]);
-        if (eventType === "user.created") {
-          yield this.userRepository.create(__spreadValues({
-            created_at: new Date(created_at),
-            last_sign_in_at: new Date(created_at),
-            updated_at: new Date(updated_at)
-          }, userData));
-          res.status(201).json({
-            message: "Usu\xE1rio criado com sucesso!"
-          });
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Erro ao verificar webhook.");
+      const {
+        type: eventType,
+        data: { created_at, updated_at, last_sign_in_at, ...userData }
+      } = event;
+      if (eventType === "user.created") {
+        await this.userRepository.create({
+          created_at: new Date(created_at),
+          last_sign_in_at: new Date(created_at),
+          updated_at: new Date(updated_at),
+          ...userData
+        });
+        res.status(201).json({
+          message: "Usu\xE1rio criado com sucesso!"
+        });
       }
-    });
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
   }
 };
 
@@ -543,36 +461,34 @@ var UpdateUserController = class {
     this.userRepository = userRepository;
     this.clerkWebhookService = clerkWebhookService;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const event = yield this.clerkWebhookService.verify(
-          req
-        );
-        if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
-        const _a = event, {
-          data: _b
-        } = _a, _c = _b, { created_at, last_sign_in_at, updated_at } = _c, userData = __objRest(_c, ["created_at", "last_sign_in_at", "updated_at"]), {
-          type: eventType
-        } = _a;
-        if (eventType === "user.updated") {
-          yield this.userRepository.update(__spreadValues({
-            created_at: new Date(created_at),
-            last_sign_in_at: new Date(last_sign_in_at),
-            updated_at: new Date(updated_at)
-          }, userData));
-          res.status(200).json({
-            message: "Usu\xE1rio atualizado com sucesso!"
-          });
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
+  async handle(req, res) {
+    try {
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
+      const {
+        data: { created_at, last_sign_in_at, updated_at, ...userData },
+        type: eventType
+      } = event;
+      if (eventType === "user.updated") {
+        await this.userRepository.update({
+          created_at: new Date(created_at),
+          last_sign_in_at: new Date(last_sign_in_at),
+          updated_at: new Date(updated_at),
+          ...userData
+        });
+        res.status(200).json({
+          message: "Usu\xE1rio atualizado com sucesso!"
+        });
       }
-    });
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
   }
 };
 
@@ -582,34 +498,32 @@ var DeleteUserControler = class {
     this.userRepository = userRepository;
     this.clerkWebhookService = clerkWebhookService;
   }
-  handle(req, res) {
-    return __async(this, null, function* () {
-      try {
-        const event = yield this.clerkWebhookService.verify(
-          req
-        );
-        if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
-        const {
-          type: eventType,
-          data: { id }
-        } = event;
-        if (eventType === "user.deleted") {
-          yield this.userRepository.delete(id);
-          res.status(200).json({
-            message: "Posts e usu\xE1rio deletados com sucesso!"
-          });
-        }
+  async handle(req, res) {
+    try {
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
+      const {
+        type: eventType,
+        data: { id }
+      } = event;
+      if (eventType === "user.deleted") {
+        await this.userRepository.delete(id);
         res.status(200).json({
-          message: "Evento n\xE3o tratado."
+          message: "Posts e usu\xE1rio deletados com sucesso!"
         });
-      } catch (err) {
-        if (err instanceof Error) {
-          res.status(400).json({
-            error: err.message
-          });
-        }
       }
-    });
+      res.status(200).json({
+        message: "Evento n\xE3o tratado."
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
   }
 };
 
@@ -672,7 +586,13 @@ router3.post(
 var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+var corsOptions = {
+  origin: ["http://localhost:3000", "https://anderson-clerk-blog.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use(cors(corsOptions));
 app.use("/", router);
 app.use("/post", router2);
 app.use("/user", router3);

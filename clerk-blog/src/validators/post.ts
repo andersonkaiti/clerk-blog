@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { stripHtml } from "@utils/strip-html";
 import { redirect } from "next/navigation";
 import z from "zod";
+import { State } from "types/form-state";
 
 export const postSchema = z.object({
   title: z.string().min(1, {
@@ -32,7 +33,7 @@ export function validateForm({ title, text }: z.infer<typeof postSchema>) {
   if (!success) {
     return {
       errors: error.flatten().fieldErrors,
-    } satisfies IErrors;
+    } satisfies State;
   }
 }
 
