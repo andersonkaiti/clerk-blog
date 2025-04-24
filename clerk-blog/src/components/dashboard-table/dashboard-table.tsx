@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment } from "react";
 import { parseTime } from "@utils/parse-time";
 import { Pencil } from "lucide-react";

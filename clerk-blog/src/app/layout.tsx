@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { Toaster } from "sonner";
 import { NavigationBar } from "@components/layout/navigation-bar/navigation-bar";
 
 const geistSans = Geist({
@@ -35,6 +36,7 @@ export default function RootLayout({
           >
             <NavigationBar />
             {children}
+            <Toaster invert />
           </body>
         </html>
       </QueryProvider>

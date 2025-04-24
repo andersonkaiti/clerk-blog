@@ -1,9 +1,9 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { api } from "@adapters/index";
+import { State } from "types/form-state";
 import { IValidatedPost, postSchema, validateForm } from "@validators/post";
 import { BASE_URL } from "@config/index";
 
@@ -23,5 +23,7 @@ export async function updatePost(id: string, _: unknown, formData: FormData) {
     body: { ...data, id, userId },
   });
 
-  redirect("/dashboard");
+  return {
+    success: true,
+  } satisfies State;
 }
