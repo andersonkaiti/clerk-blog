@@ -6,9 +6,9 @@ export class GetPostByIdController {
 
   async handle(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const { postId } = req.params;
 
-      const post = await this.postRepository.getById(id);
+      const post = await this.postRepository.getById(postId);
 
       res.status(200).json(post);
     } catch (err) {

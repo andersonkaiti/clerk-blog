@@ -22,8 +22,10 @@ var PostRepository = class {
   constructor(database2) {
     this.database = database2;
   }
-  async get(filter) {
+  async get({ filter, skip, take }) {
     return await this.database.posts.findMany({
+      skip,
+      take,
       orderBy: [
         {
           updatedAt: "desc"
@@ -53,8 +55,15 @@ var PostRepository = class {
       }
     });
   }
-  async getByUserId(userId, filter) {
+  async getByUserId({
+    userId,
+    filter,
+    skip,
+    take
+  }) {
     return await this.database.posts.findMany({
+      skip,
+      take,
       where: {
         userId,
         deleted: false,
@@ -79,7 +88,7 @@ var PostRepository = class {
     });
   }
   async getById(id) {
-    return await this.database.posts.findMany({
+    return await this.database.posts.findFirst({
       where: {
         id,
         deleted: false
@@ -110,6 +119,21 @@ var PostRepository = class {
       },
       where: {
         id
+      }
+    });
+  }
+  async count() {
+    return await this.database.posts.count({
+      where: {
+        deleted: false
+      }
+    });
+  }
+  async countByUserId(userId) {
+    return await this.database.posts.count({
+      where: {
+        deleted: false,
+        userId
       }
     });
   }
@@ -145,9 +169,29 @@ var GetUserPostsController = class {
   }
   async handle(req, res) {
     try {
-      const { userId, filter } = req.params;
-      let posts = await this.postRepository.getByUserId(userId, filter || "");
-      res.status(200).json(posts);
+      const { filter, page, limit } = req.query;
+      const { userId } = req.params;
+      const pageNumber = Number(page);
+      const pageLimit = Number(limit);
+      const skip = pageNumber * pageLimit - pageLimit;
+      const posts = await this.postRepository.getByUserId({
+        userId,
+        filter: filter || "",
+        skip,
+        take: pageLimit
+      });
+      const count = await this.postRepository.countByUserId(userId);
+      const last = Math.ceil(Number(count / pageLimit));
+      const pagination = {
+        first: 1,
+        prev: pageNumber < 2 ? null : pageNumber - 1,
+        page: pageNumber,
+        next: pageNumber >= last ? null : pageNumber + 1,
+        last,
+        count,
+        data: posts
+      };
+      res.status(200).json(pagination);
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
@@ -165,9 +209,25 @@ var GetPostsController = class {
   }
   async handle(req, res) {
     try {
-      const { filter } = req.params;
-      let posts = await this.postRepository.get(filter || "");
-      res.status(200).json(posts);
+      const { filter, page = 1, limit = 6 } = req.query;
+      const pageNumber = Number(page);
+      const pageLimit = Number(limit);
+      const skip = pageNumber * pageLimit - pageLimit;
+      const posts = await this.postRepository.get({
+        filter: filter || "",
+        skip,
+        take: pageLimit
+      });
+      const count = await this.postRepository.count();
+      const last = Math.ceil(Number(count / pageLimit));
+      const pagination = {
+        first: 1,
+        prev: pageNumber < 2 ? null : pageNumber - 1,
+        next: pageNumber >= last ? null : pageNumber + 1,
+        last,
+        data: posts
+      };
+      res.status(200).json(pagination);
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
@@ -185,8 +245,8 @@ var GetPostByIdController = class {
   }
   async handle(req, res) {
     try {
-      const { id } = req.params;
-      const post = await this.postRepository.getById(id);
+      const { postId } = req.params;
+      const post = await this.postRepository.getById(postId);
       res.status(200).json(post);
     } catch (err) {
       if (err instanceof Error) {
@@ -249,14 +309,14 @@ var PostsControllersFactory = class {
     const createPostController2 = new CreatePostController(postRepository);
     const getPostsController2 = new GetPostsController(postRepository);
     const getUserPostsController2 = new GetUserPostsController(postRepository);
-    const getPostByIDController2 = new GetPostByIdController(postRepository);
+    const getPostByIdController2 = new GetPostByIdController(postRepository);
     const updatePostController2 = new UpdatePostController(postRepository);
     const deletePostController2 = new DeletePostController(postRepository);
     return {
       createPostController: createPostController2,
       getPostsController: getPostsController2,
       getUserPostsController: getUserPostsController2,
-      getPostByIDController: getPostByIDController2,
+      getPostByIdController: getPostByIdController2,
       updatePostController: updatePostController2,
       deletePostController: deletePostController2
     };
@@ -267,8 +327,8 @@ var PostsControllersFactory = class {
 var {
   createPostController,
   deletePostController,
-  getPostByIDController,
   getPostsController,
+  getPostByIdController,
   getUserPostsController,
   updatePostController
 } = new PostsControllersFactory().createControllers();
@@ -277,18 +337,13 @@ router2.post("/", createPostController.handle.bind(createPostController));
 router2.put("/", updatePostController.handle.bind(updatePostController));
 router2.delete("/:id", deletePostController.handle.bind(deletePostController));
 router2.get("/", getPostsController.handle.bind(getPostsController));
-router2.get("/:filter", getPostsController.handle.bind(getPostsController));
 router2.get(
-  "/by-user-id/:userId",
+  "/:userId/posts",
   getUserPostsController.handle.bind(getUserPostsController)
 );
 router2.get(
-  "/by-user-id/:userId/:filter",
-  getUserPostsController.handle.bind(getUserPostsController)
-);
-router2.get(
-  "/by-post-id/:id",
-  getPostByIDController.handle.bind(getPostByIDController)
+  "/:postId",
+  getPostByIdController.handle.bind(getPostByIdController)
 );
 
 // src/routes/user-routes.ts

@@ -6,6 +6,6 @@ import { BASE_URL } from "@config/index";
 
 export async function getPostById(id: string) {
   return await api.get<IPost>({
-    url: `${BASE_URL}/post/by-post-id/${id}`,
+    url: `${BASE_URL}/post/${id}`,
   });
 }

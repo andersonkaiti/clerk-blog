@@ -1,12 +1,18 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import { api } from "@adapters/index";
-import { IPost } from "types/user-post";
+import { IPaginatedPosts } from "types/paginated-posts";
 import { BASE_URL } from "@config/index";
 
 export async function getAllPosts({
-  queryKey: [, filter],
+  queryKey: [, filter, page, limit],
 }: QueryFunctionContext) {
-  return await api.get<IPost>({
-    url: `${BASE_URL}/post/${filter}`,
-  });
+  const searchParams = new URLSearchParams({
+    filter,
+    page,
+    limit,
+  } as Record<string, string>);
+
+  return (await api.get<IPaginatedPosts>({
+    url: `${BASE_URL}/post?${searchParams}`,
+  })) as IPaginatedPosts;
 }
