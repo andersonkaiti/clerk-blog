@@ -4,8 +4,8 @@ import { PostsControllersFactory } from "../factories/posts-controllers-factory.
 const {
   createPostController,
   deletePostController,
-  getPostByIDController,
   getPostsController,
+  getPostByIdController,
   getUserPostsController,
   updatePostController,
 } = new PostsControllersFactory().createControllers();
@@ -20,21 +20,14 @@ router.delete("/:id", deletePostController.handle.bind(deletePostController));
 
 router.get("/", getPostsController.handle.bind(getPostsController));
 
-router.get("/:filter", getPostsController.handle.bind(getPostsController));
-
 router.get(
-  "/by-user-id/:userId",
+  "/:userId/posts",
   getUserPostsController.handle.bind(getUserPostsController)
 );
 
 router.get(
-  "/by-user-id/:userId/:filter",
-  getUserPostsController.handle.bind(getUserPostsController)
-);
-
-router.get(
-  "/by-post-id/:id",
-  getPostByIDController.handle.bind(getPostByIDController)
+  "/:postId",
+  getPostByIdController.handle.bind(getPostByIdController)
 );
 
 export { router as postRoutes };

@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <DottedBackground>
-      <div className="flex min-h-[calc(100vh-5rem)] w-full flex-col items-center space-y-4 p-4 sm:p-10">
+      <div className="flex min-h-[calc(100vh-5rem)] w-full flex-col items-center justify-between space-y-4 p-4 sm:p-10">
         <Filter url="/" filter={filter} setFilter={setFilter} />
 
         <Suspense fallback={<HomePostsSkeleton />}>

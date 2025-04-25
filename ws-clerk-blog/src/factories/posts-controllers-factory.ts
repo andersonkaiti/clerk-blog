@@ -18,7 +18,7 @@ export class PostsControllersFactory {
     const createPostController = new CreatePostController(postRepository);
     const getPostsController = new GetPostsController(postRepository);
     const getUserPostsController = new GetUserPostsController(postRepository);
-    const getPostByIDController = new GetPostByIdController(postRepository);
+    const getPostByIdController = new GetPostByIdController(postRepository);
     const updatePostController = new UpdatePostController(postRepository);
     const deletePostController = new DeletePostController(postRepository);
 
@@ -26,7 +26,7 @@ export class PostsControllersFactory {
       createPostController,
       getPostsController,
       getUserPostsController,
-      getPostByIDController,
+      getPostByIdController,
       updatePostController,
       deletePostController,
     };

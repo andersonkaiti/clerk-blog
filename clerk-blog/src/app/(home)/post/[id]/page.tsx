@@ -3,7 +3,7 @@ import { Clock } from "lucide-react";
 import Image from "next/image";
 import { BackButton } from "@components/back-button";
 import { DottedBackground } from "@components/dotted-background";
-import { getPostByID } from "@actions/get-post-by-id";
+import { getPostById } from "@actions/get-post-by-id";
 
 export default async function Post({
   params,
@@ -12,7 +12,7 @@ export default async function Post({
 }) {
   const { id } = await params;
 
-  const { title, text, updatedAt, user } = await getPostByID(id);
+  const { title, text, updatedAt, user } = await getPostById(id);
 
   return (
     <DottedBackground>

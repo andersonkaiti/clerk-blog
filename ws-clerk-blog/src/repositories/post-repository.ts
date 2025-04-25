@@ -2,12 +2,18 @@ import { PrismaClient } from "@prisma/client";
 import type { IPostRepository } from "./ipost-repository.d.ts";
 import type { IPost } from "../models/post.d.ts";
 import type { Posts } from "@prisma/client";
+import {
+  IPaginatedPost,
+  IPaginatedPostByUserId,
+} from "../models/paginated-post.js";
 
 export class PostRepository implements IPostRepository {
   constructor(private database: PrismaClient) {}
 
-  async get(filter: string): Promise<Posts[]> {
+  async get({ filter, skip, take }: IPaginatedPost): Promise<Posts[]> {
     return await this.database.posts.findMany({
+      skip,
+      take,
       orderBy: [
         {
           updatedAt: "desc",
@@ -38,8 +44,15 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  async getByUserId(userId: string, filter: string): Promise<Posts[]> {
+  async getByUserId({
+    userId,
+    filter,
+    skip,
+    take,
+  }: IPaginatedPostByUserId): Promise<Posts[]> {
     return await this.database.posts.findMany({
+      skip,
+      take,
       where: {
         userId,
         deleted: false,
@@ -64,8 +77,8 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  async getById(id: string): Promise<Posts[] | null> {
-    return await this.database.posts.findMany({
+  async getById(id: string): Promise<Posts | null> {
+    return await this.database.posts.findFirst({
       where: {
         id,
         deleted: false,
@@ -99,6 +112,23 @@ export class PostRepository implements IPostRepository {
       },
       where: {
         id,
+      },
+    });
+  }
+
+  async count(): Promise<number> {
+    return await this.database.posts.count({
+      where: {
+        deleted: false,
+      },
+    });
+  }
+
+  async countByUserId(userId: string): Promise<number> {
+    return await this.database.posts.count({
+      where: {
+        deleted: false,
+        userId,
       },
     });
   }

@@ -7,6 +7,11 @@ p:empty {
   @apply h-6;
 }
 
+code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

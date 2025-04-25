@@ -3,22 +3,34 @@
 import { startTransition, useOptimistic } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { deletePost } from "@actions/delete-post";
 import { getUserPosts } from "@services/get-user-posts";
+import { IPaginatedPosts } from "types/paginated-posts";
 import { IPost } from "types/user-post";
 
-export function useGetUserPosts(filter: string) {
+export function useUserPosts(filter: string) {
   const { userId } = useAuth();
-
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
 
-  const QUERY_KEY = [userId, filter || ""];
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 4;
 
-  const { data: posts, ...rest } = useSuspenseQuery({
+  const QUERY_KEY = [userId, filter || "", page, limit];
+
+  const {
+    data: { data: posts, ...pagination },
+    ...rest
+  } = useSuspenseQuery({
     queryKey: QUERY_KEY,
     queryFn: getUserPosts,
     staleTime: 0,
+    select: (posts: IPaginatedPosts) => ({
+      ...posts,
+      page,
+    }),
   });
 
   const [optimisticPosts, setOptimisticPosts] = useOptimistic(
@@ -44,6 +56,7 @@ export function useGetUserPosts(filter: string) {
   return {
     optimisticPosts,
     handleDeletePost,
+    pagination,
     ...rest,
   };
 }

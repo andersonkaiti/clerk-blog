@@ -1,4 +1,4 @@
-import { getPostByIDToUpdate } from "@actions/get-post-by-id-to-update";
+import { getPostByIdToUpdate } from "@actions/get-post-by-id-to-update";
 import { UpdateForm } from "./update-post-form";
 
 export interface IUpdatePageProps {
@@ -8,7 +8,7 @@ export interface IUpdatePageProps {
 export default async function UpdatePage({ params }: IUpdatePageProps) {
   const { id } = await params;
 
-  const post = await getPostByIDToUpdate(id);
+  const post = await getPostByIdToUpdate(id);
 
   return <UpdateForm post={post} />;
 }

@@ -6,11 +6,36 @@ export class GetUserPostsController {
 
   async handle(req: Request, res: Response) {
     try {
-      const { userId, filter } = req.params;
+      const { filter, page, limit } = req.query;
+      const { userId } = req.params;
 
-      let posts = await this.postRepository.getByUserId(userId, filter || "");
+      const pageNumber = Number(page);
+      const pageLimit = Number(limit);
 
-      res.status(200).json(posts);
+      const skip = pageNumber * pageLimit - pageLimit;
+
+      const posts = await this.postRepository.getByUserId({
+        userId,
+        filter: filter || "",
+        skip,
+        take: pageLimit,
+      });
+
+      const count = await this.postRepository.countByUserId(userId);
+
+      const last = Math.ceil(Number(count / pageLimit));
+
+      const pagination = {
+        first: 1,
+        prev: pageNumber < 2 ? null : pageNumber - 1,
+        page: pageNumber,
+        next: pageNumber >= last ? null : pageNumber + 1,
+        last,
+        count,
+        data: posts,
+      };
+
+      res.status(200).json(pagination);
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
