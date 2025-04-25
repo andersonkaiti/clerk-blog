@@ -20,7 +20,7 @@ export class FetchAdapter implements IFetchAdapter {
     }
   }
 
-  async get<T>({ url }: IHttpClient): Promise<T[]> {
+  async get<T>({ url }: IHttpClient): Promise<T> {
     return await this.request({
       url,
     });
