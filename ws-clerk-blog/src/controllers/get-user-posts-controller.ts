@@ -21,7 +21,10 @@ export class GetUserPostsController {
         take: pageLimit,
       });
 
-      const count = await this.postRepository.countByUserId(userId);
+      const count = await this.postRepository.countByUserId({
+        userId,
+        filter: filter || "",
+      });
 
       const last = Math.ceil(Number(count / pageLimit));
 

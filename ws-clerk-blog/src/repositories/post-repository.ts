@@ -3,6 +3,7 @@ import type { IPostRepository } from "./ipost-repository.d.ts";
 import type { IPost } from "../models/post.d.ts";
 import type { Posts } from "@prisma/client";
 import {
+  ICountByUserId,
   IPaginatedPost,
   IPaginatedPostByUserId,
 } from "../models/paginated-post.js";
@@ -116,19 +117,43 @@ export class PostRepository implements IPostRepository {
     });
   }
 
-  async count(): Promise<number> {
+  async count(filter: string): Promise<number> {
     return await this.database.posts.count({
       where: {
         deleted: false,
+        OR: [
+          {
+            title: {
+              contains: filter,
+            },
+          },
+          {
+            text: {
+              contains: filter,
+            },
+          },
+        ],
       },
     });
   }
 
-  async countByUserId(userId: string): Promise<number> {
+  async countByUserId({ userId, filter }: ICountByUserId): Promise<number> {
     return await this.database.posts.count({
       where: {
         deleted: false,
         userId,
+        OR: [
+          {
+            title: {
+              contains: filter,
+            },
+          },
+          {
+            text: {
+              contains: filter,
+            },
+          },
+        ],
       },
     });
   }

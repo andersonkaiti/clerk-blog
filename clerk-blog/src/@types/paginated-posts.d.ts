@@ -7,5 +7,5 @@ export interface IPaginatedPosts {
   next: number | null;
   last: number;
   count: number;
-  data: IPost[];
+  data: IPost[] | undefined;
 }

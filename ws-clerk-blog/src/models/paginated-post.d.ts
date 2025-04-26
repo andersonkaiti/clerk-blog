@@ -7,3 +7,8 @@ export interface IPaginatedPost {
 export interface IPaginatedPostByUserId extends IPaginatedPost {
   userId: string;
 }
+
+export interface ICountByUserId {
+  userId: string;
+  filter: string;
+}
