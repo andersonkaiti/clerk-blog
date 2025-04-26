@@ -122,18 +122,42 @@ var PostRepository = class {
       }
     });
   }
-  async count() {
-    return await this.database.posts.count({
-      where: {
-        deleted: false
-      }
-    });
-  }
-  async countByUserId(userId) {
+  async count(filter) {
     return await this.database.posts.count({
       where: {
         deleted: false,
-        userId
+        OR: [
+          {
+            title: {
+              contains: filter
+            }
+          },
+          {
+            text: {
+              contains: filter
+            }
+          }
+        ]
+      }
+    });
+  }
+  async countByUserId({ userId, filter }) {
+    return await this.database.posts.count({
+      where: {
+        deleted: false,
+        userId,
+        OR: [
+          {
+            title: {
+              contains: filter
+            }
+          },
+          {
+            text: {
+              contains: filter
+            }
+          }
+        ]
       }
     });
   }
@@ -180,7 +204,10 @@ var GetUserPostsController = class {
         skip,
         take: pageLimit
       });
-      const count = await this.postRepository.countByUserId(userId);
+      const count = await this.postRepository.countByUserId({
+        userId,
+        filter: filter || ""
+      });
       const last = Math.ceil(Number(count / pageLimit));
       const pagination = {
         first: 1,
@@ -218,7 +245,7 @@ var GetPostsController = class {
         skip,
         take: pageLimit
       });
-      const count = await this.postRepository.count();
+      const count = await this.postRepository.count(filter || "");
       const last = Math.ceil(Number(count / pageLimit));
       const pagination = {
         first: 1,

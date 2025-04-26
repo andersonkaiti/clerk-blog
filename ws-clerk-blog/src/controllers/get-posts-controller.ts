@@ -19,7 +19,7 @@ export class GetPostsController {
         take: pageLimit,
       });
 
-      const count = await this.postRepository.count();
+      const count = await this.postRepository.count(filter || "");
 
       const last = Math.ceil(Number(count / pageLimit));
 
