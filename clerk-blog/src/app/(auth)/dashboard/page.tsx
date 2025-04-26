@@ -4,8 +4,9 @@ import { Suspense, useState } from "react";
 import { CirclePlus } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import DashboardTableSkeleton from "@components/dashboard-table/dashboard-table-skeleton";
+import { DashboardSkeleton } from "@components/dashboard-table/skeleton";
 import { Filter } from "@components/filter";
+import { PaginationButtonSkeleton } from "@components/pagination/pagination-button-skeleton";
 
 const DynamicDashboardTable = dynamic(
   () => import("@components/dashboard-table/dashboard-table"),
@@ -16,7 +17,7 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col items-center">
-      <div className="w-full overflow-x-auto p-5 shadow-md sm:rounded-lg">
+      <div className="flex w-full flex-1 flex-col items-center p-5 shadow-md sm:rounded-lg">
         <div className="flex w-full items-center justify-between gap-2 py-4">
           <Filter
             url={filter && `/dashboard/?filter=${filter}`}
@@ -31,7 +32,16 @@ export default function Dashboard() {
             Cadastrar
           </Link>
         </div>
-        <Suspense fallback={<DashboardTableSkeleton />}>
+        <Suspense
+          fallback={
+            <div className="flex w-full flex-1 flex-col items-center justify-between gap-4 pb-5">
+              <DashboardSkeleton.Root>
+                <DashboardSkeleton.Table />
+              </DashboardSkeleton.Root>
+              <PaginationButtonSkeleton />
+            </div>
+          }
+        >
           <DynamicDashboardTable filter={filter} />
         </Suspense>
       </div>

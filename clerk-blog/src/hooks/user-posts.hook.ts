@@ -2,7 +2,12 @@
 
 import { startTransition, useOptimistic } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { paginationFallback } from "@utils/pagination-fallback";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { deletePost } from "@actions/delete-post";
@@ -16,25 +21,34 @@ export function useUserPosts(filter: string) {
   const searchParams = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 4;
+  const limit = Number(searchParams.get("limit")) || 7;
 
   const QUERY_KEY = [userId, filter || "", page, limit];
 
+  const isUserIdAvailable = !!userId;
+
   const {
-    data: { data: posts, ...pagination },
+    data: result,
+    isLoading: finallyLoading,
     ...rest
-  } = useSuspenseQuery({
+  } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: getUserPosts,
     staleTime: 0,
+    enabled: isUserIdAvailable,
+    placeholderData: keepPreviousData,
     select: (posts: IPaginatedPosts) => ({
       ...posts,
       page,
     }),
   });
 
+  const isLoading = !isUserIdAvailable || finallyLoading;
+
+  const { data: posts, ...pagination } = result || paginationFallback;
+
   const [optimisticPosts, setOptimisticPosts] = useOptimistic(
-    posts,
+    posts || [],
     (currentPosts: IPost[], postId: string) =>
       currentPosts.filter((post) => post.id !== postId),
   );
@@ -57,6 +71,7 @@ export function useUserPosts(filter: string) {
     optimisticPosts,
     handleDeletePost,
     pagination,
+    isLoading,
     ...rest,
   };
 }
