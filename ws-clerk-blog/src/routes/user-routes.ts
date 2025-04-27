@@ -1,27 +1,26 @@
-import { Router } from "express";
-import { UserControllersFactory } from "../factories/user-controllers-factory.ts";
+import { Router, type Request, type Response } from "express";
+import {
+  createUserFactory,
+  deleteUserFactory,
+  updateUserFactory,
+} from "../factories/controllers/users-factories.ts";
 
 const router = Router();
 
-const {
-  createUserController,
-  updateUserController,
-  deleteUserPostsController,
-} = new UserControllersFactory().createController();
+const { createUserController } = createUserFactory();
+const { updateUserController } = updateUserFactory();
+const { deleteUserPostsController } = deleteUserFactory();
 
-router.post(
-  "/api/webhooks/created-user",
-  createUserController.handle.bind(createUserController)
-);
+router.post("/api/webhooks/created-user", (req: Request, res: Response) => {
+  createUserController.handle(req, res);
+});
 
-router.post(
-  "/api/webhooks/updated-user",
-  updateUserController.handle.bind(updateUserController)
-);
+router.post("/api/webhooks/updated-user", (req: Request, res: Response) => {
+  updateUserController.handle(req, res);
+});
 
-router.post(
-  "/api/webhooks/deleted-user",
-  deleteUserPostsController.handle.bind(deleteUserPostsController)
-);
+router.post("/api/webhooks/deleted-user", (req: Request, res: Response) => {
+  deleteUserPostsController.handle(req, res);
+});
 
 export { router as userRoutes };

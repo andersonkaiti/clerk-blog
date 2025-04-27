@@ -1,4 +1,4 @@
-import { ClerkWeebhookService } from "../services/clerk-webhook.ts";
+import { ClerkWeebhookService } from "../../services/clerk-webhook.ts";
 import { Webhook } from "svix";
 
 export class ClerkWeebhookServiceFactory {
