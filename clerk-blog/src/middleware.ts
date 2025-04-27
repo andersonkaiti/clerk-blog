@@ -5,7 +5,7 @@ import {
 } from "@clerk/nextjs/server";
 import { NextRequest } from "next/server";
 
-const isPrivateRoute = createRouteMatcher(["/dashboard"]);
+const isPrivateRoute = createRouteMatcher(["/dashboard(.*)"]);
 
 export default clerkMiddleware(
   async (auth: ClerkMiddlewareAuth, request: NextRequest) => {
