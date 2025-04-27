@@ -17,6 +17,10 @@ router.get("/", (_req, res) => {
 // src/routes/post-routes.ts
 import { Router as Router2 } from "express";
 
+// config/database.ts
+import { PrismaClient } from "@prisma/client";
+var database = new PrismaClient();
+
 // src/repositories/post-repository.ts
 var PostRepository = class {
   constructor(database2) {
@@ -163,14 +167,10 @@ var PostRepository = class {
   }
 };
 
-// config/database.ts
-import { PrismaClient } from "@prisma/client";
-var database = new PrismaClient();
-
 // src/controllers/create-post-controller.ts
 var CreatePostController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
   }
   async handle(req, res) {
     try {
@@ -186,10 +186,88 @@ var CreatePostController = class {
   }
 };
 
+// src/controllers/update-post-controller.ts
+var UpdatePostController = class {
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
+  }
+  async handle(req, res) {
+    try {
+      const post = await this.postRepository.update(req.body);
+      res.status(200).json(post);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
+  }
+};
+
+// src/controllers/get-posts-controller.ts
+var GetPostsController = class {
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
+  }
+  async handle(req, res) {
+    try {
+      const { filter, page = 1, limit = 6 } = req.query;
+      const pageNumber = Number(page);
+      const pageLimit = Number(limit);
+      const skip = pageNumber * pageLimit - pageLimit;
+      const posts = await this.postRepository.get({
+        filter: filter || "",
+        skip,
+        take: pageLimit
+      });
+      const count = await this.postRepository.count(filter || "");
+      const last = Math.ceil(Number(count / pageLimit));
+      const pagination = {
+        first: 1,
+        prev: pageNumber < 2 ? null : pageNumber - 1,
+        next: pageNumber >= last ? null : pageNumber + 1,
+        last,
+        data: posts
+      };
+      res.status(200).json(pagination);
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
+  }
+};
+
+// src/controllers/delete-post-controller.ts
+var DeletePostController = class {
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
+  }
+  async handle(req, res) {
+    try {
+      const { id } = req.params;
+      const post = await this.postRepository.delete(id);
+      res.status(200).json({
+        message: "Post deletado.",
+        post
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
+  }
+};
+
 // src/controllers/get-user-posts-controller.ts
 var GetUserPostsController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
   }
   async handle(req, res) {
     try {
@@ -229,46 +307,10 @@ var GetUserPostsController = class {
   }
 };
 
-// src/controllers/get-posts-controller.ts
-var GetPostsController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
-  }
-  async handle(req, res) {
-    try {
-      const { filter, page = 1, limit = 6 } = req.query;
-      const pageNumber = Number(page);
-      const pageLimit = Number(limit);
-      const skip = pageNumber * pageLimit - pageLimit;
-      const posts = await this.postRepository.get({
-        filter: filter || "",
-        skip,
-        take: pageLimit
-      });
-      const count = await this.postRepository.count(filter || "");
-      const last = Math.ceil(Number(count / pageLimit));
-      const pagination = {
-        first: 1,
-        prev: pageNumber < 2 ? null : pageNumber - 1,
-        next: pageNumber >= last ? null : pageNumber + 1,
-        last,
-        data: posts
-      };
-      res.status(200).json(pagination);
-    } catch (err) {
-      if (err instanceof Error) {
-        res.status(400).json({
-          error: err.message
-        });
-      }
-    }
-  }
-};
-
 // src/controllers/get-post-by-id-controller.ts
 var GetPostByIdController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
+  constructor(postRepository2) {
+    this.postRepository = postRepository2;
   }
   async handle(req, res) {
     try {
@@ -285,15 +327,102 @@ var GetPostByIdController = class {
   }
 };
 
-// src/controllers/update-post-controller.ts
-var UpdatePostController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
+// src/factories/controllers/posts-factories.ts
+var postRepository = new PostRepository(database);
+function createPostFactory() {
+  const createPostController2 = new CreatePostController(postRepository);
+  return {
+    createPostController: createPostController2
+  };
+}
+function updatePostFactory() {
+  const updatePostController2 = new UpdatePostController(postRepository);
+  return {
+    updatePostController: updatePostController2
+  };
+}
+function getPostsFactory() {
+  const getPostsController2 = new GetPostsController(postRepository);
+  return {
+    getPostsController: getPostsController2
+  };
+}
+function deletePostFactory() {
+  const deletePostController2 = new DeletePostController(postRepository);
+  return {
+    deletePostController: deletePostController2
+  };
+}
+function userPostsFactory() {
+  const getUserPostsController2 = new GetUserPostsController(postRepository);
+  return {
+    getUserPostsController: getUserPostsController2
+  };
+}
+function postByIdFactory() {
+  const getPostByIdController2 = new GetPostByIdController(postRepository);
+  return {
+    getPostByIdController: getPostByIdController2
+  };
+}
+
+// src/routes/post-routes.ts
+var { createPostController } = createPostFactory();
+var { updatePostController } = updatePostFactory();
+var { deletePostController } = deletePostFactory();
+var { getPostsController } = getPostsFactory();
+var { getUserPostsController } = userPostsFactory();
+var { getPostByIdController } = postByIdFactory();
+var router2 = Router2();
+router2.post("/", (req, res) => {
+  createPostController.handle(req, res);
+});
+router2.put("/", (req, res) => {
+  updatePostController.handle(req, res);
+});
+router2.delete("/:id", (req, res) => {
+  deletePostController.handle(req, res);
+});
+router2.get("/", (req, res) => {
+  getPostsController.handle(req, res);
+});
+router2.get("/:userId/posts", (req, res) => {
+  getUserPostsController.handle(req, res);
+});
+router2.get("/:postId", (req, res) => {
+  getPostByIdController.handle(req, res);
+});
+
+// src/routes/user-routes.ts
+import { Router as Router3 } from "express";
+
+// src/controllers/create-user-controller.ts
+var CreateUserController = class {
+  constructor(userRepository2, clerkWebhookService) {
+    this.userRepository = userRepository2;
+    this.clerkWebhookService = clerkWebhookService;
   }
   async handle(req, res) {
     try {
-      const post = await this.postRepository.update(req.body);
-      res.status(200).json(post);
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Erro ao verificar webhook.");
+      const {
+        type: eventType,
+        data: { created_at, updated_at, last_sign_in_at, ...userData }
+      } = event;
+      if (eventType === "user.created") {
+        await this.userRepository.create({
+          created_at: new Date(created_at),
+          last_sign_in_at: new Date(created_at),
+          updated_at: new Date(updated_at),
+          ...userData
+        });
+        res.status(201).json({
+          message: "Usu\xE1rio criado com sucesso!"
+        });
+      }
     } catch (err) {
       if (err instanceof Error) {
         res.status(400).json({
@@ -304,18 +433,30 @@ var UpdatePostController = class {
   }
 };
 
-// src/controllers/delete-post-controller.ts
-var DeletePostController = class {
-  constructor(postRepository) {
-    this.postRepository = postRepository;
+// src/controllers/delete-user.ts
+var DeleteUserControler = class {
+  constructor(userRepository2, clerkWebhookService) {
+    this.userRepository = userRepository2;
+    this.clerkWebhookService = clerkWebhookService;
   }
   async handle(req, res) {
     try {
-      const { id } = req.params;
-      const post = await this.postRepository.delete(id);
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
+      const {
+        type: eventType,
+        data: { id }
+      } = event;
+      if (eventType === "user.deleted") {
+        await this.userRepository.delete(id);
+        res.status(200).json({
+          message: "Posts e usu\xE1rio deletados com sucesso!"
+        });
+      }
       res.status(200).json({
-        message: "Post deletado.",
-        post
+        message: "Evento n\xE3o tratado."
       });
     } catch (err) {
       if (err instanceof Error) {
@@ -327,54 +468,42 @@ var DeletePostController = class {
   }
 };
 
-// src/factories/posts-controllers-factory.ts
-import { config } from "dotenv";
-config();
-var PostsControllersFactory = class {
-  createControllers() {
-    const postRepository = new PostRepository(database);
-    const createPostController2 = new CreatePostController(postRepository);
-    const getPostsController2 = new GetPostsController(postRepository);
-    const getUserPostsController2 = new GetUserPostsController(postRepository);
-    const getPostByIdController2 = new GetPostByIdController(postRepository);
-    const updatePostController2 = new UpdatePostController(postRepository);
-    const deletePostController2 = new DeletePostController(postRepository);
-    return {
-      createPostController: createPostController2,
-      getPostsController: getPostsController2,
-      getUserPostsController: getUserPostsController2,
-      getPostByIdController: getPostByIdController2,
-      updatePostController: updatePostController2,
-      deletePostController: deletePostController2
-    };
+// src/controllers/update-user-controller.ts
+var UpdateUserController = class {
+  constructor(userRepository2, clerkWebhookService) {
+    this.userRepository = userRepository2;
+    this.clerkWebhookService = clerkWebhookService;
+  }
+  async handle(req, res) {
+    try {
+      const event = await this.clerkWebhookService.verify(
+        req
+      );
+      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
+      const {
+        data: { created_at, last_sign_in_at, updated_at, ...userData },
+        type: eventType
+      } = event;
+      if (eventType === "user.updated") {
+        await this.userRepository.update({
+          created_at: new Date(created_at),
+          last_sign_in_at: new Date(last_sign_in_at),
+          updated_at: new Date(updated_at),
+          ...userData
+        });
+        res.status(200).json({
+          message: "Usu\xE1rio atualizado com sucesso!"
+        });
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        res.status(400).json({
+          error: err.message
+        });
+      }
+    }
   }
 };
-
-// src/routes/post-routes.ts
-var {
-  createPostController,
-  deletePostController,
-  getPostsController,
-  getPostByIdController,
-  getUserPostsController,
-  updatePostController
-} = new PostsControllersFactory().createControllers();
-var router2 = Router2();
-router2.post("/", createPostController.handle.bind(createPostController));
-router2.put("/", updatePostController.handle.bind(updatePostController));
-router2.delete("/:id", deletePostController.handle.bind(deletePostController));
-router2.get("/", getPostsController.handle.bind(getPostsController));
-router2.get(
-  "/:userId/posts",
-  getUserPostsController.handle.bind(getUserPostsController)
-);
-router2.get(
-  "/:postId",
-  getPostByIdController.handle.bind(getPostByIdController)
-);
-
-// src/routes/user-routes.ts
-import { Router as Router3 } from "express";
 
 // src/repositories/user-repository.ts
 var UserRepository = class {
@@ -490,7 +619,7 @@ var ClerkWeebhookService = class {
   }
 };
 
-// src/factories/clerk-webhook-service-factory.ts
+// src/factories/services/clerk-webhook-service-factory.ts
 import { Webhook } from "svix";
 var ClerkWeebhookServiceFactory = class {
   createWebhook(secret) {
@@ -500,169 +629,59 @@ var ClerkWeebhookServiceFactory = class {
   }
 };
 
-// src/controllers/create-user-controller.ts
-var CreateUserController = class {
-  constructor(userRepository, clerkWebhookService) {
-    this.userRepository = userRepository;
-    this.clerkWebhookService = clerkWebhookService;
-  }
-  async handle(req, res) {
-    try {
-      const event = await this.clerkWebhookService.verify(
-        req
-      );
-      if (!event) throw new Error("Erro ao verificar webhook.");
-      const {
-        type: eventType,
-        data: { created_at, updated_at, last_sign_in_at, ...userData }
-      } = event;
-      if (eventType === "user.created") {
-        await this.userRepository.create({
-          created_at: new Date(created_at),
-          last_sign_in_at: new Date(created_at),
-          updated_at: new Date(updated_at),
-          ...userData
-        });
-        res.status(201).json({
-          message: "Usu\xE1rio criado com sucesso!"
-        });
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        res.status(400).json({
-          error: err.message
-        });
-      }
-    }
-  }
-};
-
-// src/controllers/update-user-controller.ts
-var UpdateUserController = class {
-  constructor(userRepository, clerkWebhookService) {
-    this.userRepository = userRepository;
-    this.clerkWebhookService = clerkWebhookService;
-  }
-  async handle(req, res) {
-    try {
-      const event = await this.clerkWebhookService.verify(
-        req
-      );
-      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
-      const {
-        data: { created_at, last_sign_in_at, updated_at, ...userData },
-        type: eventType
-      } = event;
-      if (eventType === "user.updated") {
-        await this.userRepository.update({
-          created_at: new Date(created_at),
-          last_sign_in_at: new Date(last_sign_in_at),
-          updated_at: new Date(updated_at),
-          ...userData
-        });
-        res.status(200).json({
-          message: "Usu\xE1rio atualizado com sucesso!"
-        });
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        res.status(400).json({
-          error: err.message
-        });
-      }
-    }
-  }
-};
-
-// src/controllers/delete-user.ts
-var DeleteUserControler = class {
-  constructor(userRepository, clerkWebhookService) {
-    this.userRepository = userRepository;
-    this.clerkWebhookService = clerkWebhookService;
-  }
-  async handle(req, res) {
-    try {
-      const event = await this.clerkWebhookService.verify(
-        req
-      );
-      if (!event) throw new Error("Falha na verifica\xE7\xE3o do webhook.");
-      const {
-        type: eventType,
-        data: { id }
-      } = event;
-      if (eventType === "user.deleted") {
-        await this.userRepository.delete(id);
-        res.status(200).json({
-          message: "Posts e usu\xE1rio deletados com sucesso!"
-        });
-      }
-      res.status(200).json({
-        message: "Evento n\xE3o tratado."
-      });
-    } catch (err) {
-      if (err instanceof Error) {
-        res.status(400).json({
-          error: err.message
-        });
-      }
-    }
-  }
-};
-
-// src/factories/user-controllers-factory.ts
-import { config as config2 } from "dotenv";
-config2();
-var UserControllersFactory = class {
-  createController() {
-    const { clerkWebhookService: clerkWebhookCreateUserService } = new ClerkWeebhookServiceFactory().createWebhook(
-      process.env.CREATE_USER_SECRET
-    );
-    const { clerkWebhookService: clerkWebhookUpdateUserService } = new ClerkWeebhookServiceFactory().createWebhook(
-      process.env.UPDATE_USER_SECRET
-    );
-    const { clerkWebhookService: clerkWebhookDeleteUserService } = new ClerkWeebhookServiceFactory().createWebhook(
-      process.env.DELETE_USER_SECRET
-    );
-    const userRepository = new UserRepository(database);
-    const createUserController2 = new CreateUserController(
-      userRepository,
-      clerkWebhookCreateUserService
-    );
-    const updateUserController2 = new UpdateUserController(
-      userRepository,
-      clerkWebhookUpdateUserService
-    );
-    const deleteUserPostsController2 = new DeleteUserControler(
-      userRepository,
-      clerkWebhookDeleteUserService
-    );
-    return {
-      createUserController: createUserController2,
-      updateUserController: updateUserController2,
-      deleteUserPostsController: deleteUserPostsController2
-    };
-  }
-};
+// src/factories/controllers/users-factories.ts
+var userRepository = new UserRepository(database);
+function createUserFactory() {
+  const { clerkWebhookService: clerkWebhookCreateUserService } = new ClerkWeebhookServiceFactory().createWebhook(
+    process.env.CREATE_USER_SECRET
+  );
+  const createUserController2 = new CreateUserController(
+    userRepository,
+    clerkWebhookCreateUserService
+  );
+  return {
+    createUserController: createUserController2
+  };
+}
+function updateUserFactory() {
+  const { clerkWebhookService: clerkWebhookUpdateUserService } = new ClerkWeebhookServiceFactory().createWebhook(
+    process.env.UPDATE_USER_SECRET
+  );
+  const updateUserController2 = new UpdateUserController(
+    userRepository,
+    clerkWebhookUpdateUserService
+  );
+  return {
+    updateUserController: updateUserController2
+  };
+}
+function deleteUserFactory() {
+  const { clerkWebhookService: clerkWebhookDeleteUserService } = new ClerkWeebhookServiceFactory().createWebhook(
+    process.env.DELETE_USER_SECRET
+  );
+  const deleteUserPostsController2 = new DeleteUserControler(
+    userRepository,
+    clerkWebhookDeleteUserService
+  );
+  return {
+    deleteUserPostsController: deleteUserPostsController2
+  };
+}
 
 // src/routes/user-routes.ts
 var router3 = Router3();
-var {
-  createUserController,
-  updateUserController,
-  deleteUserPostsController
-} = new UserControllersFactory().createController();
-router3.post(
-  "/api/webhooks/created-user",
-  createUserController.handle.bind(createUserController)
-);
-router3.post(
-  "/api/webhooks/updated-user",
-  updateUserController.handle.bind(updateUserController)
-);
-router3.post(
-  "/api/webhooks/deleted-user",
-  deleteUserPostsController.handle.bind(deleteUserPostsController)
-);
+var { createUserController } = createUserFactory();
+var { updateUserController } = updateUserFactory();
+var { deleteUserPostsController } = deleteUserFactory();
+router3.post("/api/webhooks/created-user", (req, res) => {
+  createUserController.handle(req, res);
+});
+router3.post("/api/webhooks/updated-user", (req, res) => {
+  updateUserController.handle(req, res);
+});
+router3.post("/api/webhooks/deleted-user", (req, res) => {
+  deleteUserPostsController.handle(req, res);
+});
 
 // src/app.ts
 var app = express();
